@@ -1,0 +1,6 @@
+method,n_cells,expected_cells,direct_sld_cells,root_sld_cells,complete,direct_sld_complete
+gain_path_refined,650,650,650,650,True,True
+herding,650,650,650,650,True,True
+histdistill_density,650,650,650,650,True,True
+histdistill_refined,650,650,650,650,True,True
+random,650,650,650,650,True,True

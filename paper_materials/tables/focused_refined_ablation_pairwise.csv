@@ -1,0 +1,9 @@
+method,method_label,comparator,comparator_label,n_pairs,mean_diff,median_diff,wins,ties,losses,wilcoxon_p
+refined_no_path,No path features,gain_path_refined,Gain-path refined,240,-0.005945078710862574,-0.001064509261230473,106,1,133,0.0033037194360361834
+refined_no_refine,No local refinement,gain_path_refined,Gain-path refined,240,-0.006094662381343198,-3.152662879762902e-05,118,2,120,0.2910997975305276
+refined_no_grad,No gradient mass,gain_path_refined,Gain-path refined,240,-0.003109801757429839,-0.00014934289127810363,117,3,120,0.27349948668805435
+refined_no_hess,No Hessian mass,gain_path_refined,Gain-path refined,240,-0.001760855115490565,-0.00033152223550914073,115,2,123,0.40183368702302114
+refined_no_conf,No teacher confidence,gain_path_refined,Gain-path refined,240,-0.003541660213442018,0.0,60,114,66,0.16930867230448943
+refined_no_raw,No raw features,gain_path_refined,Gain-path refined,240,-0.006521110424123099,-0.002296684650176184,102,1,137,0.0023487414548004765
+refined_no_gain_weight,No gain weighting,gain_path_refined,Gain-path refined,240,2.012882447665713e-06,0.0,2,238,0,0.17971249487899976
+refined_path_occupancy_only,Path occupancy only,gain_path_refined,Gain-path refined,240,-0.004749866032555476,-0.001083008248458306,110,0,130,0.014297831242700992

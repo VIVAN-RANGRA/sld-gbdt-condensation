@@ -1,0 +1,24 @@
+base_config: configs/default.yaml
+
+loss_components:
+  full: {}
+  no_gain:
+    distill.weight_gain: 0.0
+  no_margin:
+    distill.weight_margin: 0.0
+  no_newton:
+    distill.weight_newton: 0.0
+  no_child:
+    distill.weight_child: 0.0
+  no_hist:
+    distill.weight_hist: 0.0
+  no_marginal:
+    distill.weight_marginal: 0.0
+  no_pairwise:
+    distill.weight_pairwise: 0.0
+  no_entropy_anneal:
+    distill.weight_entropy: 0.0
+    distill.temperature_end: 2.0
+
+fast:
+  distill.steps: 200

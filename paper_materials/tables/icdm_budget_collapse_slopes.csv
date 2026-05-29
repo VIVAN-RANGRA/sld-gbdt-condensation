@@ -1,0 +1,131 @@
+method,method_label,dataset,n_train,loglog_sld_budget_slope
+gain_path_refined,Legacy gain-path refined,adult,12000,-0.43290803202503575
+gain_path_refined,Legacy gain-path refined,agaricus_lepiota,4887,-0.08880963087049819
+gain_path_refined,Legacy gain-path refined,australian,414,-0.8814135863235943
+gain_path_refined,Legacy gain-path refined,bank_marketing,12000,-0.6828953129468648
+gain_path_refined,Legacy gain-path refined,breast_w,419,-0.06798396892845872
+gain_path_refined,Legacy gain-path refined,credit_approval,414,-0.05020276422641897
+gain_path_refined,Legacy gain-path refined,credit_g,600,-0.8253579511029874
+gain_path_refined,Legacy gain-path refined,diabetes,460,-0.14602347867823343
+gain_path_refined,Legacy gain-path refined,electricity,12000,-0.07646040823972876
+gain_path_refined,Legacy gain-path refined,gametes_epistasis_2_way_1000atts_0_4h_edm_1_edm_1_1,960,-0.920688354211732
+gain_path_refined,Legacy gain-path refined,gametes_epistasis_2_way_20atts_0_1h_edm_1_1,960,-0.8538582209874508
+gain_path_refined,Legacy gain-path refined,gametes_epistasis_2_way_20atts_0_4h_edm_1_1,960,-1.0936499859290796
+gain_path_refined,Legacy gain-path refined,gametes_epistasis_3_way_20atts_0_2h_edm_1_1,960,-0.6182212429971039
+gain_path_refined,Legacy gain-path refined,gametes_heterogeneity_20atts_1600_het_0_4_0_2_50_edm_2_001,960,-0.7618537377968843
+gain_path_refined,Legacy gain-path refined,gametes_heterogeneity_20atts_1600_het_0_4_0_2_75_edm_2_001,960,-0.70481020775674
+gain_path_refined,Legacy gain-path refined,hill_valley_with_noise,726,-0.7017468257835054
+gain_path_refined,Legacy gain-path refined,hill_valley_without_noise,726,-0.6340480287543367
+gain_path_refined,Legacy gain-path refined,kr_vs_kp,1917,0.014654666875452877
+gain_path_refined,Legacy gain-path refined,pc1,665,-0.6882140610863543
+gain_path_refined,Legacy gain-path refined,pc3,937,-0.11769292895407055
+gain_path_refined,Legacy gain-path refined,pc4,874,-0.03110739890445999
+gain_path_refined,Legacy gain-path refined,phoneme,3242,-0.03557694263305071
+gain_path_refined,Legacy gain-path refined,qsar_biodeg,633,-0.15993497303888918
+gain_path_refined,Legacy gain-path refined,sick,2262,-0.03760676471244865
+gain_path_refined,Legacy gain-path refined,spambase,2760,-0.5541853369615966
+gain_path_refined,Legacy gain-path refined,tic_tac_toe,574,0.0627127039136628
+herding,Herding,adult,12000,-0.22426585285273978
+herding,Herding,agaricus_lepiota,4887,-0.05108560802149306
+herding,Herding,australian,414,-0.9630960989470922
+herding,Herding,bank_marketing,12000,-0.19246414522400915
+herding,Herding,breast_w,419,-0.09219255945609696
+herding,Herding,credit_approval,414,0.010997738994005999
+herding,Herding,credit_g,600,-0.6053457527062732
+herding,Herding,diabetes,460,-0.31386103282323724
+herding,Herding,electricity,12000,-0.13930833073777296
+herding,Herding,gametes_epistasis_2_way_1000atts_0_4h_edm_1_edm_1_1,960,-0.7637460776013923
+herding,Herding,gametes_epistasis_2_way_20atts_0_1h_edm_1_1,960,-0.7617034094379448
+herding,Herding,gametes_epistasis_2_way_20atts_0_4h_edm_1_1,960,-1.0913534347662632
+herding,Herding,gametes_epistasis_3_way_20atts_0_2h_edm_1_1,960,-0.18515299568927338
+herding,Herding,gametes_heterogeneity_20atts_1600_het_0_4_0_2_50_edm_2_001,960,-0.7663128064189306
+herding,Herding,gametes_heterogeneity_20atts_1600_het_0_4_0_2_75_edm_2_001,960,-0.675570145137352
+herding,Herding,hill_valley_with_noise,726,0.26953046876395065
+herding,Herding,hill_valley_without_noise,726,-0.7874636376125322
+herding,Herding,kr_vs_kp,1917,0.014654666875452877
+herding,Herding,pc1,665,-0.6039149568946223
+herding,Herding,pc3,937,-0.252972909282428
+herding,Herding,pc4,874,-0.13221274065794836
+herding,Herding,phoneme,3242,-0.06381762687997257
+herding,Herding,qsar_biodeg,633,-0.2244500166588615
+herding,Herding,sick,2262,-0.09045984211451177
+herding,Herding,spambase,2760,-0.5356778953036863
+herding,Herding,tic_tac_toe,574,-0.20936745090862988
+histdistill_density,HistDistill-Density,adult,12000,-0.4271575769235854
+histdistill_density,HistDistill-Density,agaricus_lepiota,4887,-0.11672136271504739
+histdistill_density,HistDistill-Density,australian,414,-0.8810527224345265
+histdistill_density,HistDistill-Density,bank_marketing,12000,-0.6531357730039701
+histdistill_density,HistDistill-Density,breast_w,419,-0.1089963700949533
+histdistill_density,HistDistill-Density,credit_approval,414,-0.16508085316549173
+histdistill_density,HistDistill-Density,credit_g,600,-0.8457835104288658
+histdistill_density,HistDistill-Density,diabetes,460,-0.19660156181217153
+histdistill_density,HistDistill-Density,electricity,12000,-0.07111938660151286
+histdistill_density,HistDistill-Density,gametes_epistasis_2_way_1000atts_0_4h_edm_1_edm_1_1,960,-0.9039147602322609
+histdistill_density,HistDistill-Density,gametes_epistasis_2_way_20atts_0_1h_edm_1_1,960,-1.0136378637765628
+histdistill_density,HistDistill-Density,gametes_epistasis_2_way_20atts_0_4h_edm_1_1,960,-1.0583261561073534
+histdistill_density,HistDistill-Density,gametes_epistasis_3_way_20atts_0_2h_edm_1_1,960,-0.737567474166347
+histdistill_density,HistDistill-Density,gametes_heterogeneity_20atts_1600_het_0_4_0_2_50_edm_2_001,960,-0.8751770965524391
+histdistill_density,HistDistill-Density,gametes_heterogeneity_20atts_1600_het_0_4_0_2_75_edm_2_001,960,-0.7149295858379136
+histdistill_density,HistDistill-Density,hill_valley_with_noise,726,-0.7542736612083232
+histdistill_density,HistDistill-Density,hill_valley_without_noise,726,-0.765703874475071
+histdistill_density,HistDistill-Density,kr_vs_kp,1917,0.01924281473605359
+histdistill_density,HistDistill-Density,pc1,665,-0.6664510625316435
+histdistill_density,HistDistill-Density,pc3,937,-0.11273582375412544
+histdistill_density,HistDistill-Density,pc4,874,-0.06546831846353585
+histdistill_density,HistDistill-Density,phoneme,3242,-0.05773497048181658
+histdistill_density,HistDistill-Density,qsar_biodeg,633,-0.1522689720722388
+histdistill_density,HistDistill-Density,sick,2262,-0.06343526223313263
+histdistill_density,HistDistill-Density,spambase,2760,-0.5378362077400165
+histdistill_density,HistDistill-Density,tic_tac_toe,574,0.020502369272365744
+histdistill_refined,HistDistill-Refined,adult,12000,-0.43213255864206884
+histdistill_refined,HistDistill-Refined,agaricus_lepiota,4887,-0.08932789775567165
+histdistill_refined,HistDistill-Refined,australian,414,-0.8566177314835964
+histdistill_refined,HistDistill-Refined,bank_marketing,12000,-0.6364741712018104
+histdistill_refined,HistDistill-Refined,breast_w,419,-0.09880762462472753
+histdistill_refined,HistDistill-Refined,credit_approval,414,-0.1069578736203853
+histdistill_refined,HistDistill-Refined,credit_g,600,-0.8496157557193971
+histdistill_refined,HistDistill-Refined,diabetes,460,-0.19314625432209637
+histdistill_refined,HistDistill-Refined,electricity,12000,-0.10318750855981329
+histdistill_refined,HistDistill-Refined,gametes_epistasis_2_way_1000atts_0_4h_edm_1_edm_1_1,960,-0.7875556285334482
+histdistill_refined,HistDistill-Refined,gametes_epistasis_2_way_20atts_0_1h_edm_1_1,960,-0.9225983998014651
+histdistill_refined,HistDistill-Refined,gametes_epistasis_2_way_20atts_0_4h_edm_1_1,960,-1.07743203178516
+histdistill_refined,HistDistill-Refined,gametes_epistasis_3_way_20atts_0_2h_edm_1_1,960,-0.7841814844737475
+histdistill_refined,HistDistill-Refined,gametes_heterogeneity_20atts_1600_het_0_4_0_2_50_edm_2_001,960,-0.8333167393539915
+histdistill_refined,HistDistill-Refined,gametes_heterogeneity_20atts_1600_het_0_4_0_2_75_edm_2_001,960,-0.7681834018803633
+histdistill_refined,HistDistill-Refined,hill_valley_with_noise,726,-0.7004866222755128
+histdistill_refined,HistDistill-Refined,hill_valley_without_noise,726,-0.6256958432988394
+histdistill_refined,HistDistill-Refined,kr_vs_kp,1917,0.027866683330910153
+histdistill_refined,HistDistill-Refined,pc1,665,-0.6087912640669281
+histdistill_refined,HistDistill-Refined,pc3,937,-0.13836650813247303
+histdistill_refined,HistDistill-Refined,pc4,874,-0.07037317729780423
+histdistill_refined,HistDistill-Refined,phoneme,3242,-0.045391263338867664
+histdistill_refined,HistDistill-Refined,qsar_biodeg,633,-0.12183771666395796
+histdistill_refined,HistDistill-Refined,sick,2262,-0.056690811802879965
+histdistill_refined,HistDistill-Refined,spambase,2760,-0.5213779378648944
+histdistill_refined,HistDistill-Refined,tic_tac_toe,574,0.06034062390235072
+random,Random,adult,12000,-0.2663256854288875
+random,Random,agaricus_lepiota,4887,-0.13953543380919758
+random,Random,australian,414,-0.8407861874367428
+random,Random,bank_marketing,12000,-0.5992023382721965
+random,Random,breast_w,419,-0.08384471153608024
+random,Random,credit_approval,414,-0.02195461096933412
+random,Random,credit_g,600,-0.7234741459804248
+random,Random,diabetes,460,-0.16378251919909015
+random,Random,electricity,12000,-0.2572501250344249
+random,Random,gametes_epistasis_2_way_1000atts_0_4h_edm_1_edm_1_1,960,-0.756021127196385
+random,Random,gametes_epistasis_2_way_20atts_0_1h_edm_1_1,960,-1.1005071284221364
+random,Random,gametes_epistasis_2_way_20atts_0_4h_edm_1_1,960,-1.028654522261049
+random,Random,gametes_epistasis_3_way_20atts_0_2h_edm_1_1,960,-1.0341812662265892
+random,Random,gametes_heterogeneity_20atts_1600_het_0_4_0_2_50_edm_2_001,960,-1.1379325223463155
+random,Random,gametes_heterogeneity_20atts_1600_het_0_4_0_2_75_edm_2_001,960,-0.9533530225538946
+random,Random,hill_valley_with_noise,726,-0.6706493159338915
+random,Random,hill_valley_without_noise,726,-0.880007035097834
+random,Random,kr_vs_kp,1917,-0.22581921315686693
+random,Random,pc1,665,-0.758769014622557
+random,Random,pc3,937,-0.2494184005892134
+random,Random,pc4,874,-0.08974313655926794
+random,Random,phoneme,3242,-0.1434716298073926
+random,Random,qsar_biodeg,633,-0.3055889628313796
+random,Random,sick,2262,0.00504841727778526
+random,Random,spambase,2760,-0.4465287967075234
+random,Random,tic_tac_toe,574,-0.5690114594106293

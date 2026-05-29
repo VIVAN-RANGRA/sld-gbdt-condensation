@@ -1,0 +1,5 @@
+comparison,mean_delta_auroc,median_delta_auroc,random_wins,n_datasets,wilcoxon_p,note
+Random - HD-Density,0.033793510812317816,0.044872317060173694,3,3,0.25,single large-N run per dataset; paired test across datasets only
+Random - HD-Refined,0.03487348173227045,0.038740150893989744,3,3,0.25,single large-N run per dataset; paired test across datasets only
+Random - Herding,0.12313323895988519,0.0734699807769772,3,3,0.25,single large-N run per dataset; paired test across datasets only
+Random - Gradient sampling,0.4523298601281633,0.41541232939907374,3,3,0.25,single large-N run per dataset; paired test across datasets only

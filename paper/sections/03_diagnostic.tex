@@ -1,0 +1,152 @@
+% 03_diagnostic.tex  --  Background + The Split-Landscape Discrepancy
+
+\section{Background and the SLD Diagnostic}
+\label{sec:diagnostic}
+
+\subsection{GBDT Split-Gain Landscape}
+
+Let the full training dataset be $D = \{(x_i, y_i)\}_{i=1}^{N}$ with features
+$x_i \in \mathbb{R}^F$ and labels $y_i$. A gradient-boosted decision tree
+(GBDT) fits an additive ensemble of trees by performing, at each node, a
+greedy split that maximises the regularised gain~\cite{friedman2001gbm,
+chen2016xgboost}. Given first- and second-order loss statistics
+$g_i = \partial_{\hat{y}} \ell(\hat{y}_i, y_i)$ and
+$h_i = \partial^2_{\hat{y}} \ell(\hat{y}_i, y_i)$ for each instance $i$, the
+gain of partitioning the instance set $I$ at a node into left and right
+children $I_L, I_R$ is
+%
+\begin{equation}
+  \label{eq:gain}
+  \begin{aligned}
+  \mathcal{G}(I_L, I_R) = \frac{1}{2}\Bigg[
+      &\frac{\bigl(\sum_{i \in I_L} g_i\bigr)^2}{\sum_{i \in I_L} h_i + \lambda}
+    + \frac{\bigl(\sum_{i \in I_R} g_i\bigr)^2}{\sum_{i \in I_R} h_i + \lambda} \\
+    &- \frac{\bigl(\sum_{i \in I} g_i\bigr)^2}{\sum_{i \in I} h_i + \lambda}
+    \Bigg] - \gamma,
+  \end{aligned}
+\end{equation}
+%
+where $\lambda \geq 0$ is the $\ell_2$ leaf-weight regulariser and
+$\gamma \geq 0$ is the minimum gain threshold~\cite{chen2016xgboost}. Modern
+histogram-based GBDTs~\cite{ke2017lightgbm,prokhorenkova2018catboost} discretise
+each feature $f$ into $B$ bins; per-bin sums of $(g, h)$ suffice to evaluate
+every candidate split.
+
+\begin{lemma}[Histogram sufficiency; standard, e.g.~\cite{ke2017lightgbm,ibragimov2019mvs}]
+\label{lem:histogram}
+Given the current gradients and Hessians, a histogram GBDT with $B$ bins per
+feature has its full per-node split-gain landscape determined entirely by the
+$F \times B$ grid of per-bin $(g, h)$ aggregates. No other information from the
+training set is required to evaluate \eqref{eq:gain} at every candidate
+(feature, threshold) pair.
+\end{lemma}
+
+\noindent We define the \emph{split-gain landscape}
+$\Gamma_D \in \mathbb{R}^{F \times (B-1)}$ as the gain $\mathcal{G}$ that each
+(feature, bin-boundary threshold) candidate would achieve on dataset $D$ under a
+fixed prediction state. Lemma~\ref{lem:histogram} is a standard consequence of
+the histogram GBDT algorithm; we state it here to ground the diagnostic. Its
+importance is histogram sufficiency: once the prediction state fixes
+$g_i,h_i$, $\Gamma_D$ can be computed in one histogram pass.
+
+\subsection{Split-Landscape Discrepancy}
+
+Let $D'=\{(x'_j,y'_j,w'_j)\}_{j=1}^m$ be a weighted selected or synthetic
+surrogate of $D$, with $m \ll N$. Synthetic points are binned using the same
+feature preprocessing and bin boundaries as $D$; their labels may be hard labels
+or soft labels converted to the objective's expected gradients. We quantify the
+structural gap between $D$ and $D'$ via their landscape distance.
+
+\begin{definition}[Split-Landscape Discrepancy]
+\label{def:sld}
+The relative Split-Landscape Discrepancy of order $p$ between dataset $D$ and
+surrogate $D'$ is
+%
+\begin{equation}
+  \label{eq:sld}
+  \mathrm{SLD}_p(D, D') \;=\;
+  \frac{\bigl\lVert \Gamma_D - \Gamma_{D'} \bigr\rVert_p}
+       {\max(\lVert \Gamma_D\rVert_p,\epsilon)},
+\end{equation}
+%
+using the same bins, objective, regularisation, base score, and feature
+preprocessing for $D$ and $D'$. We use $p = \infty$ (worst-case relative split
+distortion) and the rank-based \emph{split-regret} variant. Root-SLD compares
+the root landscape. Reference-tree early-node SLD averages over early nodes of a
+fixed full-data reference tree, using the reference node memberships. Full-path
+SLD extends the same comparison along deeper reference-tree paths.
+\end{definition}
+
+\noindent Both variants are computed from histogram statistics under a fixed
+prediction state, and crucially \emph{no model is retrained on $D'$}.
+\Cref{fig:pipeline} illustrates how SLD fits into the condensation evaluation
+pipeline as a no-candidate-retraining alternative to the retrain-and-evaluate
+loop.
+
+\subsection{Diagnostic Sanity Checks}
+
+The diagnostic rests on two standard facts about histogram GBDTs and set
+coverage. We use them only to motivate what SLD measures; the contribution of
+the paper is the empirical measurement study across 17 condensation methods.
+
+\paragraph{Margin preservation.}
+Let $\Delta_v$ be the gain margin between the best-ranked and second-best-ranked
+split at node $v$ on $D$. If
+%
+\begin{equation}
+  \label{eq:prop1}
+  \mathrm{SLD}_\infty(D, D') < \Delta_v / 2,
+\end{equation}
+%
+then the argmax split selected by $D'$ coincides with the argmax selected by $D$
+at node $v$, assuming a unique argmax and deterministic tie-breaking. In the
+measured margin-qualifying cells reported in \Cref{sec:results-ordering},
+root-level split agreement equals $1.0$. The dose-response experiment
+(\cref{sec:results-dose}) provides the empirical validation.
+
+\paragraph{Coverage guarantee.}
+The split-coverage objective is the unweighted fraction of full-data high-gain
+split thresholds whose adjacent bins are represented by at least one selected
+or weighted surrogate point. It is binary threshold coverage, not gain-weighted
+path fidelity. As a standard set-coverage objective, it is monotone submodular
+under a cardinality constraint, so greedy maximisation has the usual
+$(1 - 1/e)$ approximation guarantee~\cite{nemhauser1978submodular}. This defines
+the HistDistill-Greedy selector: it achieves near-optimal coverage of the split
+landscape, yet performs poorly by downstream predictive performance
+(\cref{sec:results-coverage}). The gap between coverage and predictive fidelity is the
+central empirical finding of \cref{sec:results-coverage}.
+
+\subsection{Computing SLD: Algorithm}
+
+\Cref{alg:sld} summarises the SLD computation. The key property is that, after
+the fixed prediction state is available, scoring a candidate requires only one
+histogram pass and one arithmetic comparison of landscapes; no candidate GBDT is
+trained. The pass costs $O(NFB)$ to build full-data histograms and $O(mFB)$ for
+the surrogate, with shared bins and $O(FB)$ landscape memory per node.
+
+\begin{algorithm}[t]
+\caption{Compute Split-Landscape Discrepancy without candidate retraining}
+\label{alg:sld}
+\begin{algorithmic}[1]
+\Require Full dataset $D$, weighted surrogate $D'$, bins, norm order $p$, fixed prediction state $\pi$
+\Ensure $\mathrm{SLD}_p(D, D')$ and split-regret score
+\State Compute first- and second-order loss statistics for $D$ under $\pi$
+       \Comment{root base score or reference-booster predictions}
+\State Build histogram $H_D \in \mathbb{R}^{F \times B \times 2}$:
+       for each feature $f$ and bin $b$, store
+       $\bigl(\textstyle\sum_{i: x_{if} \in b} g_i,\;
+               \textstyle\sum_{i: x_{if} \in b} h_i\bigr)$
+\State Compute landscape $\Gamma_D \in \mathbb{R}^{F \times (B-1)}$ via \eqref{eq:gain}
+       applied to every candidate split
+\State Repeat Steps 1--3 for $D'$ to obtain $\Gamma_{D'}$
+       \Comment{selected rows reuse weights; synthetic rows are evaluated under $\pi$}
+\State $\mathrm{SLD}_p \leftarrow
+       \lVert \Gamma_D - \Gamma_{D'} \rVert_p / \max(\lVert\Gamma_D\rVert_p,\epsilon)$
+\State \textbf{Split-regret:} let $(f^*, b^*) = \arg\max_{f,b} [\Gamma_D]_{f,b}$
+       and $(\hat{f}, \hat{b}) = \arg\max_{f,b} [\Gamma_{D'}]_{f,b}$; \\
+       \hspace{4em} split-regret $\leftarrow
+         \max\!\left(0,\frac{[\Gamma_D]_{f^*,b^*}-[\Gamma_D]_{\hat f,\hat b}}
+         {\max(|[\Gamma_D]_{f^*,b^*}|,\epsilon)}\right)$
+\State \Return $\mathrm{SLD}_p$, split-regret
+\end{algorithmic}
+\end{algorithm}

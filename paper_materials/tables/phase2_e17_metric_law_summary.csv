@@ -1,0 +1,4 @@
+metric,pooled_spearman_vs_auroc,within_dataset_spearman_vs_auroc,n_cells
+split_regret_norm,0.10739392616253995,-0.2085212362340505,2652
+split_regret_root_norm,0.04888448631605304,-0.1704727252424146,2652
+sld_inf_norm,-0.035939358000957024,-0.3353424603479757,1872

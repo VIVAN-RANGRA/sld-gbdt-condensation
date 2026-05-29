@@ -1,0 +1,4 @@
+dataset_label,n_train,spearman_regret_auroc,top_speedup,top_speedup_method
+Covertype,481012,-0.35909242322980395,160.25617932271322,Gradient sampling
+SUSY,4500000,-0.9746794344808963,1864.1692414773036,Gradient sampling
+HIGGS,10500000,0.11180339887498948,5733.9737243237605,Gradient sampling

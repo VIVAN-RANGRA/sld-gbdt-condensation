@@ -1,0 +1,6 @@
+method,n_cells,datasets,budgets,seeds,learners,auroc_mean,expected_cells,complete
+gain_path_refined,3250,26,5,5,5,0.7430192527784545,3250,True
+herding,3250,26,5,5,5,0.7306250634548082,3250,True
+histdistill_density,3250,26,5,5,5,0.742456186447327,3250,True
+histdistill_refined,3250,26,5,5,5,0.7424592629624811,3250,True
+random,3250,26,5,5,5,0.7243877327827842,3250,True

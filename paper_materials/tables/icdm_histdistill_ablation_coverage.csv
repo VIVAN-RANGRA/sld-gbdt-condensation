@@ -1,0 +1,12 @@
+method,n_cells,datasets,budgets,seeds,learners,auroc_mean,expected_cells,complete
+gain_path_refined,780,26,2,3,5,0.7508829109835836,780,True
+herding,780,26,2,3,5,0.733883469113126,780,True
+histdistill_density,780,26,2,3,5,0.7507792935797425,780,True
+histdistill_greedy,780,26,2,3,5,0.6285237432807209,780,True
+histdistill_importance,780,26,2,3,5,0.6903665261401604,780,True
+histdistill_linear_coverage,780,26,2,3,5,0.5957344759466019,780,True
+histdistill_no_refine,780,26,2,3,5,0.6279145930456773,780,True
+histdistill_no_weight_fit,780,26,2,3,5,0.6162978816327056,780,True
+histdistill_refined,780,26,2,3,5,0.7497965860601192,780,True
+histdistill_root_only,780,26,2,3,5,0.5964143856319122,780,True
+random,780,26,2,3,5,0.7260337212234325,780,True

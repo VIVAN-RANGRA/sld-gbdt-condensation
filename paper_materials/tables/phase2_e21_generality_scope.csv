@@ -1,0 +1,4 @@
+artifact,rows,primary_metric,histdistill,random,full_data,note,tree_histdistill,tree_random
+multiclass_ovr,5,macro_auroc,0.9100327454385266,0.8971038208312354,0.9310256925754126,supportive: HistDistill beats random on mean macro-AUROC but remains below full-data,,
+regression,5,r2,-1.7936251153770766,-0.6794472447117705,0.6256556636542056,limitation: all-learner mean is dominated by severe MLP failures; tree-only slice is milder,0.16236874432191659,0.1568528406858193
+hpo,1,top3_jaccard,0.0,,,negative: condensed-set HPO rankings do not recover full-data top configurations,,

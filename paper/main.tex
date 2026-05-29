@@ -1,0 +1,285 @@
+% main.tex  --  ICDM 2026 submission
+% Title: Coverage Is Not Predictive Fidelity: A Split-Landscape Analysis of Data
+%        Condensation for Gradient-Boosted Trees
+
+\documentclass[conference]{IEEEtran}
+
+% ============================================================
+%  PACKAGES  (order matters — do not reorder)
+% ============================================================
+
+% Font encoding — avoids missing OT1/Courier TFM on some TeX Live installs
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+
+% Math
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+
+% Graphics
+\usepackage{graphicx}
+
+% Tables
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{array}
+
+% Sub-figures
+\usepackage{subcaption}
+
+% Algorithms (algpseudocode for \State, \Require, \Ensure, \Comment, \Return)
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+% Numbers / units
+\usepackage{siunitx}
+\sisetup{detect-weight=true, mode=text}
+
+% Color
+\usepackage{xcolor}
+
+% Structured statement environments
+\usepackage{amsthm}
+\newtheorem{lemma}{Lemma}
+\newtheorem{definition}{Definition}
+
+% Bibliography (IEEE style)
+\usepackage{cite}
+
+% TikZ
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,calc,fit,backgrounds}
+
+% Hyperlinks (load before cleveref)
+\usepackage[hidelinks]{hyperref}
+
+% Cross-references (MUST be last)
+\usepackage[capitalize,noabbrev]{cleveref}
+\usepackage{enumitem}
+
+% ============================================================
+%  TITLE / AUTHORS
+% ============================================================
+
+\title{Coverage Is Not Predictive Fidelity: A Split-Landscape Analysis of Data
+Condensation for Gradient-Boosted Trees}
+
+\author{%
+  \IEEEauthorblockN{Vivan Rangra}
+  \IEEEauthorblockA{Indraprastha Institute of Information Technology Delhi\\
+  New Delhi, India\\
+  vivan22581@iiitd.ac.in}%
+}
+
+% ============================================================
+%  DOCUMENT
+% ============================================================
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+\input{sections/00_abstract}
+\end{abstract}
+
+\begin{IEEEkeywords}
+data condensation; gradient-boosted decision trees; coreset selection;
+tabular data; no-candidate-retraining diagnostics
+\end{IEEEkeywords}
+
+% ============================================================
+%  SECTION 1: INTRODUCTION
+% ============================================================
+
+\input{sections/01_intro}
+
+% ============================================================
+%  SECTION 2: RELATED WORK
+% ============================================================
+
+\input{sections/02_related}
+
+% ============================================================
+%  SECTION 3: BACKGROUND AND THE SLD DIAGNOSTIC
+% ============================================================
+
+\input{sections/03_diagnostic}
+
+% ---- Figure 1: Pipeline TikZ (referenced in §3) ----
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[
+  font=\small,
+  node distance=4mm and 5mm,
+  box/.style={rectangle, rounded corners=2pt, draw, thick,
+              minimum height=7mm, text centered, fill=white},
+  bigbox/.style={rectangle, rounded corners=2pt, draw=gray, thick,
+                 fill=gray!8, inner sep=4pt},
+  arr/.style={-Stealth, thick},
+  dashed arr/.style={-Stealth, thick, dashed, gray},
+]
+
+% Full data
+\node[box, fill=blue!10, text width=18mm] (fulldata) {Full data $D$};
+
+% 17 condensers
+\node[box, fill=orange!15, text width=22mm, right=of fulldata] (condensers)
+  {17 condensers};
+
+% Condensed set
+\node[box, fill=green!10, text width=18mm, right=of condensers] (cset)
+  {Condensed set $D'$};
+
+% SLD path (no candidate retraining)
+\node[box, fill=teal!15, text width=24mm,
+      below=8mm of cset] (sld)
+  {Histogram landscape\\$\Gamma_{D'} \to \mathrm{SLD}$};
+
+% Verdict
+\node[box, fill=teal!25, text width=22mm,
+      below=6mm of sld] (verdict)
+  {Screening score\\(no retrain)};
+
+% Retrain path (expensive)
+\node[box, fill=red!10, text width=22mm,
+      above=8mm of cset] (retrain)
+  {Retrain model\\on $D'$};
+
+% Predictive-performance evaluation
+\node[box, fill=red!20, text width=22mm,
+      above=6mm of retrain] (acc)
+  {Test AUROC\\(expensive)};
+
+% Arrows
+\draw[arr] (fulldata) -- (condensers);
+\draw[arr] (condensers) -- (cset);
+\draw[arr] (cset) -- (sld) node[midway, right, font=\scriptsize, teal!70!black]
+  {fast path};
+\draw[arr] (sld) -- (verdict);
+\draw[arr] (cset) -- (retrain) node[midway, right, font=\scriptsize, red!70!black]
+  {slow path};
+\draw[arr] (retrain) -- (acc);
+
+% Landscape feed from full data to SLD
+\draw[arr, dashed] (fulldata.south) -- ++(0,-5mm) -|
+  (sld.west) node[near start, below, font=\scriptsize, gray]
+  {$\Gamma_D$};
+
+% Label brace
+\node[font=\scriptsize, gray, left=2mm of sld] {no retrain on $D'$};
+
+\end{tikzpicture}
+\caption{%
+  \textbf{SLD evaluation pipeline.}
+  After selecting a condensed set $D'$ from full data $D$ via any of 17
+  condensers, the fast path computes the candidate's histogram split-gain
+  landscape $\Gamma_{D'}$ under the same fixed prediction state as
+  $\Gamma_D$. It provides a cheap screening signal before retraining on each
+  candidate, in contrast to the slow path of retrain-and-test evaluation.%
+}
+\label{fig:pipeline}
+\end{figure}
+
+% ============================================================
+%  SECTION 4: EXPERIMENTAL SETUP
+% ============================================================
+
+\input{sections/04_setup}
+
+% ---- Table 1: Method taxonomy ----
+\begin{table}[t]
+\centering
+\caption{The 17 condensation methods. $\dagger$: adapted from differentiable settings.}
+\label{tab:methods}
+\tiny
+\setlength{\tabcolsep}{2pt}
+\begin{tabular}{@{}llp{20mm}@{}}
+\toprule
+\textbf{Family} & \textbf{Method} & \textbf{Signal / citation} \\
+\midrule
+\multirow{3}{*}{Geometry}
+  & Random         & Uniform \\
+  & Herding        & Moments~\cite{welling2009herding} \\
+  & K-center       & Coverage~\cite{sener2018kcenter} \\
+\midrule
+\multirow{2}{*}{GBDT-native}
+  & GOSS$^\dagger$  & Grad-norm~\cite{ke2017lightgbm} \\
+  & MVS$^\dagger$   & Min-var~\cite{ibragimov2019mvs} \\
+\midrule
+\multirow{5}{*}{Gradient}
+  & GraNd$^\dagger$       & Norm at init~\cite{paul2021el2n} \\
+  & EL2N$^\dagger$        & Error L2~\cite{paul2021el2n} \\
+  & CRAIG$^\dagger$        & Submod.~\cite{mirzasoleiman2020craig} \\
+  & GradMatch$^\dagger$   & Grad match~\cite{killamsetty2021gradmatch} \\
+  & Grad.\ samp.$^\dagger$ & Loss-weighted \\
+\midrule
+Distrib.
+  & DistributionMatching & Distr.\ match~\cite{zhao2023dm} \\
+\midrule
+\multirow{6}{*}{Gain / landscape}
+  & HD-Greedy  & $(1-1/e)$ coverage \\
+  & HD-Refined & Landscape fidelity \\
+  & HD-Density & Land.+density \\
+  & Gain sketch & Gain sketch \\
+  & Gain-path sk. & Gain-path sketch \\
+  & Legacy gp & Gain-path refined \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================================
+%  SECTION 5: RESULTS
+% ============================================================
+
+\input{sections/05_results}
+
+% ============================================================
+%  SECTION 6: SCOPE AND LIMITATIONS
+% ============================================================
+
+\input{sections/06_limitations}
+
+% ============================================================
+%  SECTION 7: CONCLUSION
+% ============================================================
+
+\input{sections/07_conclusion}
+
+% Dataset inventory table (Appendix A) placed before bibliography so it
+% floats into available space on the last body page.
+\begin{table}[t]
+\centering
+\caption{Dataset inventory (binary; public via OpenML/PMLB).
+$*$: focused binary suite.}
+\label{tab:datasets}
+\tiny
+\setlength{\tabcolsep}{1.5pt}
+\begin{tabular}{@{}lrr|lrr@{}}
+\toprule
+\textbf{Dataset} & \textbf{N} & \textbf{F} &
+\textbf{Dataset} & \textbf{N} & \textbf{F} \\
+\midrule
+adult$^*$      & 20k & 14 & spambase$^*$  & 4{,}601 & 57 \\
+australian$^*$ &  690 & 14 & agaricus      & 8{,}145 & 22 \\
+bank\_mktg$^*$ & 20k & 16 & credit\_appr. &   690 & 15 \\
+breast\_w$^*$  &  699 &  9 & electricity   & 20k &  8 \\
+credit\_g$^*$  & 1k  & 20 & gametes (6)   & 1{,}600 & 20 \\
+diabetes$^*$   &  768 &  8 & hill\_val.(2) & 1{,}212 & 100 \\
+pc1$^*$        & 1{,}109 & 21 & kr\_vs\_kp & 3{,}196 & 36 \\
+phoneme        & 5{,}404 &  5 & pc3, pc4   & $\sim$1{,}500 & 37 \\
+qsar\_biodeg   & 1{,}055 & 41 & sick        & 3{,}772 & 29 \\
+smoke          & 1{,}500 & 12 & tic\_tac    &   958 &  9 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================================
+%  BIBLIOGRAPHY
+% ============================================================
+
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+\end{document}

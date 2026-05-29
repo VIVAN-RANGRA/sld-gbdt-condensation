@@ -1,0 +1,4 @@
+method,method_label,comparator,comparator_label,n_pairs,mean_diff,median_diff,wins,ties,losses,wilcoxon_p
+histdistill,HistDistill,random,Random,144,0.012928924607291151,0.005642413622778286,114,0,30,4.769897199767541e-12
+histdistill,HistDistill,herding,Herding,144,0.013999397965992625,0.007693958425623704,118,0,26,1.6224926548674575e-15
+histdistill,HistDistill,k_center,K-center,144,0.00783617024883107,-0.000550570568921549,69,0,75,0.09990763882887123

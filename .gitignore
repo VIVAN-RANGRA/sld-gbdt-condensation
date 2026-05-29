@@ -1,0 +1,27 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+env/
+
+# Keep large or regenerated artifacts out of the reproducibility wrapper.
+data/
+results/
+*.npz
+*.joblib
+*.csv.gz
+*.part
+*.log
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.out
+*.synctex.gz
+paper/build/
+paper/main_pdf_text.txt
+paper/missfont.log

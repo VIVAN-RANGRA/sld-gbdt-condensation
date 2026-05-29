@@ -1,0 +1,6 @@
+x,y,pooled_spearman,within_dataset_spearman,n_cells
+sld_inf_norm,structure_error,0.05764644285659512,0.19582465905136073,3744
+split_regret_norm,structure_error,0.12509571717453996,0.1483530259957172,5304
+leaf_population_l1,leaf_estimate_recovery,0.40792254569382785,0.3683454157196381,5304
+leaf_population_kl,leaf_estimate_recovery,0.18972676897459934,0.2486574098777768,5304
+sld_inf_norm,leaf_estimate_recovery,0.0643177095175044,0.14457945546328796,3744

@@ -1,0 +1,6 @@
+method,n_cells,datasets,budgets,seeds,learners,expected_cells,complete
+gain_path_refined,1300,26,2,5,5,1300,True
+herding,1300,26,2,5,5,1300,True
+histdistill_density,1300,26,2,5,5,1300,True
+histdistill_refined,1300,26,2,5,5,1300,True
+random,1300,26,2,5,5,1300,True

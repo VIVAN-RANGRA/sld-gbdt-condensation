@@ -1,0 +1,69 @@
+% 06_limitations.tex  --  Where the Lens Stops
+
+\section{Where the Lens Stops: Scope and Limitations}
+\label{sec:limits}
+
+The SLD diagnostic is designed around the inductive bias of histogram GBDTs.
+Three scopes delimit where that design leads to weak or negative results.
+
+\textbf{Regression is structure-dominated, and no condenser fixes it.}
+The regression audit uses eight public datasets (diabetes, California housing,
+abalone, cpu\_act, kin8nm, house\_16H, elevators, wine quality), budgets 25/50,
+seeds 0--2, and XGBoost/LightGBM/MLP downstream learners. SLD is recomputed for
+squared-error gradients. The structure reference--the full-data tree structure
+with leaves refit under the decomposition protocol--achieves $R^2 \approx 0.63$.
+The leaf-refit model, which uses each condensed set's structure but refits
+leaves on full data, falls to $R^2 = 0.28$--$0.29$. The deployed condensed
+models then reach only $R^2 \approx 0.16$ for HistDistill and $0.05$ for
+K-center. Thus, for HistDistill, the total gap from the structure reference to
+the deployed model is about $0.47$; of that gap, about $0.35$ is structural
+($0.63-0.28$) and about $0.12$ is due to leaf-value estimation ($0.28-0.16$).
+No method we evaluate closes the structure gap: the best deployed condensed
+$R^2$ is $0.16$, well below even the leaf-refit baseline of $0.28$.
+\Cref{fig:regression} shows this pattern. The SLD diagnostic correctly
+\emph{diagnoses} this failure, since the condensed sets have high $\mathrm{SLD}_\infty$
+relative to full-data regression baselines, but it does not cure it. Regression
+tasks appear to require structure fidelity that current condensers cannot achieve
+at the budgets we study.
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\columnwidth]{figures/phase2_e21_regression_decomposition.png}
+\caption{%
+  \textbf{Regression failure modes.}
+  Left: leaf-population mismatch tracks leaf-estimate loss. Right: refitting
+  leaves on full data helps, but the remaining structure gap dominates.%
+}
+\label{fig:regression}
+\end{figure}
+
+\textbf{HPO transfer is weak.}
+We test whether condensed sets preserve hyperparameter rankings on 12 binary
+datasets using HistDistill-Refined at budget 50. Each dataset evaluates the same
+100 XGBoost hist configurations on the condensed and full train/validation
+splits; the random-search space is 50--150 trees, depth 2--5, learning rate
+0.025--0.18, min-child-weight 0.5--8, subsample/column-subsample 0.65--1,
+$\lambda=0.05$--8, and $\gamma=0$--2. Across datasets, top-3 Jaccard between
+condensed- and full-data HPO results is $0.042$, top-1 match rate is $0.083$,
+and Spearman rank correlation is $0.145$. Median HPO speedup is $1.57\times$.
+The mean final test-AUROC gap is only $0.00125$, but that is because condensed
+HPO finds a different competitive configuration, not because it transfers the
+full-data ranking. Condensed HPO should therefore be followed by full-data
+checks of top configurations before deployment.
+
+\textbf{No-retraining selection of the single best method remains weak.}
+SLD ranks method families well at the aggregate level (Spearman $-0.87$), but
+selecting the \emph{single best} method for a new dataset based only on SLD is
+harder. The top-3 success rate of the SLD-based selector is $0.436$
+across 156 dataset--budget--seed cells, and the top-1 rate is $0.122$. The
+split-regret selector performs similarly.
+The landscape score is useful for screening out bad condensers and ranking
+families, but the gap between the top-2 or top-3 methods is often smaller than
+the within-dataset variance of SLD, making single-method selection unreliable.
+Future work could combine the landscape score with dataset-level meta-features
+to improve per-instance selection.
+
+Multiclass classification is a thin positive extension (HistDistill $0.910$
+macro-AUROC vs.\ Random $0.897$), but taken together these scopes mark the
+boundary of the diagnostic: SLD is built around the GBDT split-gain objective,
+and its predictive value erodes as a task drifts away from that inductive bias.

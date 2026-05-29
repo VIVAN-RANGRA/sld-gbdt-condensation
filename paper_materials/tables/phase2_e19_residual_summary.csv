@@ -1,0 +1,6 @@
+quantity,value,n_methods
+method_level_split_regret_to_auroc_slope,-0.9144862794600149,17
+method_level_split_regret_to_auroc_spearman,-0.8674846625766872,17
+line_residual_vs_leaf_estimate_recovery_spearman,0.05030674846625768,17
+line_residual_vs_leaf_population_l1_spearman,0.2294478527607362,17
+line_residual_vs_structure_error_spearman,0.3325153374233129,17

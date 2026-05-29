@@ -1,0 +1,13 @@
+method,method_label,comparator,comparator_label,n_pairs,mean_diff,median_diff,wins,ties,losses,wilcoxon_p
+histdistill_refined,HistDistill-Refined,gain_path_refined,Legacy gain-path refined,24,-0.005035825371589989,-0.002308840480637675,10,0,14,0.19737839698791504
+histdistill_refined,HistDistill-Refined,herding,Herding,24,0.004531904734418797,-0.0019394175951552572,11,0,13,0.8333734273910522
+histdistill_refined,HistDistill-Refined,random,Random,24,0.04958862024743696,0.026903936727983746,20,0,4,0.00037276744842529297
+histdistill_density,HistDistill-Density,gain_path_refined,Legacy gain-path refined,24,-0.017401369419616716,-0.00272310170612039,9,0,15,0.14335036277770996
+histdistill_density,HistDistill-Density,herding,Herding,24,-0.00783363931360793,0.0017122880627040704,12,0,12,0.944107174873352
+histdistill_density,HistDistill-Density,random,Random,24,0.03722307619941023,0.01805643173491084,19,0,5,0.0035042762756347656
+gain_path_refined,Legacy gain-path refined,herding,Herding,24,0.009567730106008787,0.00967224992524579,15,0,9,0.10738253593444824
+gain_path_refined,Legacy gain-path refined,random,Random,24,0.05462444561902694,0.02292127994111376,19,0,5,0.00017547607421875
+herding,Herding,gain_path_refined,Legacy gain-path refined,24,-0.009567730106008787,-0.00967224992524579,9,0,15,0.10738253593444824
+herding,Herding,random,Random,24,0.04505671551301815,0.028072673976653695,18,0,6,0.005897641181945801
+random,Random,gain_path_refined,Legacy gain-path refined,24,-0.05462444561902694,-0.02292127994111376,5,0,19,0.00017547607421875
+random,Random,herding,Herding,24,-0.04505671551301815,-0.028072673976653695,6,0,18,0.005897641181945801

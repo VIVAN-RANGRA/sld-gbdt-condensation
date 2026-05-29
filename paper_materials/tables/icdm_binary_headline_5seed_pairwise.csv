@@ -1,0 +1,7 @@
+method,method_label,comparator,comparator_label,n_pairs,mean_diff,median_diff,wins,ties,losses,wilcoxon_p
+histdistill_density,HistDistill-Density,gain_path_refined,Legacy gain-path refined,1300,-0.0006543622563844061,-0.0003772376230857244,609,7,684,0.0501244572015132
+histdistill_density,HistDistill-Density,herding,Herding,1300,0.015476085720382088,0.011445157370158443,850,0,450,1.280182792642443e-33
+histdistill_density,HistDistill-Density,random,Random,1300,0.02392472440942763,0.019072691726650548,971,1,328,8.723549004470907e-72
+histdistill_refined,HistDistill-Refined,gain_path_refined,Legacy gain-path refined,1300,-0.0004492798418550047,-0.0004106168612569294,603,11,686,0.07165428255498031
+histdistill_refined,HistDistill-Refined,herding,Herding,1300,0.01568116813491149,0.011912683502959986,862,1,437,1.829000581126897e-33
+histdistill_refined,HistDistill-Refined,random,Random,1300,0.024129806823957028,0.019411279296725092,983,0,317,1.1919717427728567e-70

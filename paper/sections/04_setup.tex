@@ -1,0 +1,118 @@
+% 04_setup.tex  --  Experimental Setup
+
+\section{Experimental Setup}
+\label{sec:setup}
+
+\subsection{Methods Evaluated}
+
+We evaluate 17 condensation methods spanning five groups; \Cref{tab:methods}
+gives the full taxonomy. \textbf{Geometry/classical coresets} include Random
+sampling, Herding~\cite{welling2009herding}, and K-center~\cite{sener2018kcenter}.
+\textbf{GBDT-native subsampling} methods include GOSS~\cite{ke2017lightgbm}
+and MVS~\cite{ibragimov2019mvs}, adapted to produce static condensed sets.
+\textbf{Gradient- and score-based selection} methods include GraNd,
+EL2N~\cite{paul2021el2n}, CRAIG-style~\cite{mirzasoleiman2020craig},
+GradMatch-style~\cite{killamsetty2021gradmatch}, and gradient sampling
+(loss-weighted). \textbf{Distribution-matching distillation} is represented
+by DistributionMatching~\cite{zhao2023dm} adapted to tabular features.
+\textbf{Gain/landscape-based methods} form our primary family: HistDistill-Greedy
+(the $(1-1/e)$-optimal coverage selector), HistDistill-Refined and
+HistDistill-Density (the practical variants optimising landscape fidelity
+directly), gain sketch, gain-path sketch, and the legacy gain-path refined
+method. The last three are prior gain-path methods against which we benchmark
+the refined family.
+
+\subsection{Datasets and Protocol}
+
+Our experiments use tabular datasets drawn from
+OpenML~\cite{vanschoren2013openml}, PMLB~\cite{olson2017pmlb}, and
+UCI-sourced public datasets; the
+full inventory appears in \Cref{tab:datasets}. The artifact repository lists
+the exact OpenML/PMLB identifiers and processed split checksums. The core study
+is on binary classification. For each dataset we
+condense the training set to five budgets, $\{10, 25, 50, 100, 200\}$ rows, and
+repeat every (dataset, method, budget) configuration over five random seeds.
+Across the 26 binary datasets and the five core methods this gives $3{,}250$
+retrained-model evaluations for headline performance (\Cref{tab:headline}) and
+$650$ landscape-fidelity measurements, one per dataset, method, and budget.
+
+The broader 17-method landscape audit uses a lighter but complete diagnostic
+grid: 26 datasets, two audited budgets (25 and 50 rows), and three seeds, for
+156 dataset--budget--seed cells per method. We use this grid for
+\Cref{fig:universal} and the method-level ordering analyses. The decomposition
+study in \Cref{tab:decomp} is a diagnostic subset used only to illustrate the
+two reference-chain failure modes, so its absolute AUROCs should not be compared
+directly to the pooled headline values.
+
+Three further studies probe the diagnostic beyond this grid. The robustness
+study injects calibrated split-gain noise at eight dose levels on all 26 binary
+datasets, with three seeds and three repeats per level, for $1{,}872$
+measurements. Generality studies add eight multiclass datasets
+(one-vs-rest macro-AUROC), eight regression datasets ($R^2$), and a
+twelve-dataset hyperparameter-transfer benchmark; \cref{sec:limits} gives the
+protocol details and outcomes.
+A separate scale audit uses Covertype, SUSY, and HIGGS at training sizes from
+$20{,}000$ to $10.5$M rows with 400-row condensed sets. This audit tests
+runtime scaling and whether the split-regret ordering survives at deployment
+scale; it is not used to tune the main 26-dataset benchmark.
+
+\subsection{Metrics}
+
+\textbf{Downstream predictive performance.} We score binary tasks by AUROC,
+multiclass tasks by one-vs-rest macro-AUROC, and regression tasks by $R^2$.
+Every score is computed on a held-out test set with the model retrained on the
+condensed set.
+
+\textbf{Fidelity.} $\mathrm{SLD}_\infty$ is the relative $\ell_\infty$
+landscape distance of \eqref{eq:sld}, and split-regret is the normalised gain
+lost when a node follows the surrogate's argmax split rather than the full-data
+one. Raw SLD is retained in the released tables, but relative SLD and
+split-regret are the primary metrics because raw landscape scale is
+dataset-dependent. Both are read off the histogram statistics before retraining
+on any candidate surrogate.
+
+\textbf{Error decomposition.} To separate the two ways a condensed set can hurt
+a tree, we evaluate three models in a reference chain. The \emph{structure
+reference} uses the full-data tree structure with leaves refit under the
+decomposition protocol. The \emph{leaf-refit model} uses the condensed-set tree
+structure but refits its leaves on full data, isolating the cost of the
+structure alone. The \emph{deployed model} is trained only from the condensed
+set. We define structure error as reference AUROC minus leaf-refit AUROC, and
+leaf-estimate gap as leaf-refit AUROC minus deployed AUROC. These two gaps add
+along the reference-to-deployed chain; they are not intended to sum to the
+ordinary full-data AUROC gap. We also track how representatively the condensed
+set fills the model's leaves, defined as the $\ell_1$ distance between the
+condensed- and full-data distributions of training instances across the leaves;
+we call this the leaf-population mismatch.
+
+\subsection{Learner and Hardware}
+
+The reference landscape is built with XGBoost hist trees:
+80 boosting rounds, max depth 3, learning rate 0.08, $\lambda=1$, $\gamma=0$,
+subsample 0.9, column subsample 0.9, binary-logistic objective, and fixed seeds.
+Downstream retraining uses the same XGBoost setting for the GBDT-mechanism
+results; auxiliary learner slots use LightGBM, CatBoost/fallback histogram
+boosting, random forests, and MLPs only for robustness checks. For LightGBM we
+report the current setting explicitly: 120 trees, max depth 4, learning rate
+0.06, 15 leaves, subsample and column subsample 0.9, and the library default
+minimum child samples of 20. This default constrains splits at 10--25-row
+budgets, so no conclusion relies on LightGBM-only tiny-budget superiority; the
+artifact repository includes the budget-aware sweep command for
+\texttt{min\_child\_samples}\,$\in\{1,2,5,10,20\}$. Hardware for the reported
+local runs is a CPU workstation with no GPU requirement.
+
+\subsection{Reproducibility}
+
+All datasets are public, and all preprocessing is deterministic: categorical
+features are ordinal/one-hot encoded as specified in the scripts, numerical
+features are binned with shared full-data bin edges, and train/validation/test
+splits use stratified seeds where labels permit. The artifact repository,
+\url{https://github.com/vivan22581/sld-gbdt-condensation}, contains the
+exact configs, seeds, package versions (Python 3.11.9, NumPy 2.4.4, pandas
+2.2.3, scikit-learn 1.8.0, XGBoost 3.2.0, LightGBM 4.6.0, SciPy 1.17.1),
+processed metric CSVs, plotting scripts, and commands such as
+\texttt{python scripts/19\_run\_icdm\_core.py},
+\texttt{python scripts/32\_run\_phase2\_experiments.py}, and
+\texttt{python scripts/34\_run\_large\_scale\_experiment.py}. The repository is
+intended to reproduce the reported tables exactly when cached processed data are
+used, and to closely replicate them from raw public data.

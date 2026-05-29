@@ -1,0 +1,8 @@
+component,better_method,better_label,ablation_method,ablation_label,n_pairs,mean_delta,median_delta,wins,ties,losses,wilcoxon_p
+density term,histdistill_density,HistDistill-Density,histdistill_refined,HistDistill-Refined,780,0.0009827075196232574,0.0,386,11,383,0.6858754549954666
+weight fit,histdistill_refined,HistDistill-Refined,histdistill_no_weight_fit,No weight fit,780,0.13349870442741363,0.12385127314814812,659,0,121,2.350199645257636e-97
+probe regions,histdistill_refined,HistDistill-Refined,histdistill_root_only,Root-only probes,780,0.15338220042820702,0.14376557919978727,671,0,109,9.440445177296655e-102
+saturating coverage,histdistill_refined,HistDistill-Refined,histdistill_linear_coverage,Linear coverage,780,0.15406211011351728,0.144457119702875,672,0,108,2.7712551642453544e-102
+local refinement,histdistill_refined,HistDistill-Refined,histdistill_no_refine,No refinement,780,0.12188199301444187,0.08587869319556121,651,1,128,1.2062267023847367e-90
+warm-start/refined selector,histdistill_refined,HistDistill-Refined,histdistill_greedy,Pure greedy selector,780,0.12127284277939825,0.08516194995822343,651,1,128,1.1717551309290926e-90
+greedy vs importance,histdistill_greedy,Pure greedy selector,histdistill_importance,ImportanceSample,780,-0.061842782859439366,-0.03308606431929845,262,1,517,6.792870044250605e-29

@@ -1,0 +1,16 @@
+experiment,status,note
+E1 main binary,complete,"Full 26-dataset binary grid is complete for budgets 10/25/50/100/200, seeds 0..4, and five learners; the compact headline table uses budgets 25/50."
+E2 statistical tests,complete,Wilcoxon and win/tie/loss are generated in core and ablation tables.
+E3 SLD law,complete,Direct SLD fields regenerated for key methods; SLD law and Prop. 1 diagnostics generated.
+E4 budget curve,complete,Key methods have budgets 10/25/50/100/200 with AUROC and SLD summaries.
+E5 margin distribution,complete,Teacher root/probe margin distribution generated from landscape files.
+E6 selector study,complete,"Greedy/importance selector AUROC, SLD, coverage ratio, and f(S)/proxy upper-bound diagnostics are generated."
+E7 transfer,complete,Cross-learner transfer regret table and profile figure generated.
+E8 MMD-SLD Pareto,complete,"Density beta sweep with MMD, SLD, XGBoost AUROC, and MLP AUROC is present."
+E9 anchoring,complete,"Teacher-student rho_t drift diagnostic is present for warm-start, greedy, importance, and random condensed sets."
+E10 ablation,complete,"Weight fit, root-only/probes, saturation, refinement, greedy, and importance ablations are complete for 25/50."
+E11 regression,complete,"Regression breadth suite is present with 8 datasets, budgets 25/50, seeds 0..2, and XGBoost/LightGBM/MLP; all-learner result is weak, tree-learner slice is more favorable."
+E12 multiclass,complete,"Multiclass one-vs-rest breadth suite is present with 8 datasets, budgets 25/50, seeds 0..2, and three learners; LightGBM slot uses a stable histogram-GBDT fallback."
+E13 HPO,complete,HPO diagnostic was run; current result is a weak/negative application result rather than a headline claim.
+E14 runtime,complete,Downstream runtime and speedup tables generated from metrics.
+E15 sensitivity,complete,Lambda and probe-depth sensitivity summary is present; bin sensitivity remains outside the fixed-bin artifacts.

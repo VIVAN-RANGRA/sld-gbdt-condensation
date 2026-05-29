@@ -1,0 +1,71 @@
+project:
+  seed: 0
+  n_jobs: 3
+  results_dir: results
+  raw_dir: data/raw
+  processed_dir: data/processed
+
+data:
+  test_size: 0.2
+  val_size: 0.2
+  max_rows: 20000
+  numerical_bins: 32
+  max_categorical_bins: 64
+  rare_category_min_count: 10
+  focused_binary_datasets:
+    - adult
+    - australian
+    - bank_marketing
+    - breast_w
+    - credit_g
+    - diabetes
+    - pc1
+    - spambase
+
+teacher:
+  learner: xgboost
+  n_estimators: 80
+  max_depth: 3
+  learning_rate: 0.08
+  reg_lambda: 1.0
+  gamma: 0.0
+  subsample: 0.9
+  colsample_bytree: 0.9
+  checkpoint_rounds: [0, 1, 5, 10, 25, 50]
+
+landscape:
+  top_candidates: 32
+  hard_candidates: 32
+  random_candidates: 64
+  tau_gain: 1.0
+  probe_max_depth: 2
+  max_probe_regions: 24
+  min_region_support: 32
+
+distill:
+  budget_per_class: 25
+  steps: 80
+  lr: 0.08
+  temperature_start: 2.0
+  temperature_end: 0.35
+  weight_gain: 1.0
+  weight_margin: 0.25
+  weight_newton: 0.5
+  weight_child: 0.15
+  weight_hist: 0.25
+  weight_class: 1.0
+  weight_marginal: 0.35
+  weight_pairwise: 0.05
+  weight_entropy: 0.002
+  weight_anchor: 0.03
+  weight_label_anchor: 0.05
+  margin_alpha: 0.75
+  top_pair_count: 8
+  max_train_probes: 12
+  use_soft_routing: true
+  use_soft_teacher_routing: true
+  decode_strategy: anchored_class_median
+
+downstream:
+  learners: [xgboost, lightgbm, catboost, random_forest, mlp]
+  metric: auroc

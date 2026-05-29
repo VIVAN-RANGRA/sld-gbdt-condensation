@@ -1,0 +1,21 @@
+% 00_abstract.tex  --  Abstract body only (no \begin{abstract} wrapper; main.tex provides that)
+% Source: PAPER_SPEC.md §0 locked abstract, light polish only.
+
+Data condensation replaces a large training set with a small surrogate, but
+tabular condensers are usually judged only after retraining a model on each
+candidate. For histogram gradient-boosted decision trees (GBDTs), we ask whether
+a candidate preserves the split decisions the full-data booster would make. We
+introduce Split-Landscape Discrepancy (SLD), a no-candidate-retraining
+diagnostic that compares full and condensed split-gain landscapes under fixed
+preprocessing and prediction state.
+
+Across 17 condensers on 26 binary tabular datasets, method-level split-regret is
+strongly rank-correlated with downstream AUROC in the small-to-mid-size regime
+(Spearman $\rho=-0.87$), making SLD useful for screening bad surrogates and
+ranking method families, not for single-dataset top-1 selection. The diagnostic
+also exposes why coverage can fail: a greedy high-gain threshold-coverage
+selector is among the weakest performers because unweighted coverage differs
+from gain-weighted structural fidelity. At very large scale, random sampling
+becomes hard to beat and root-regret loses resolution as reasonable surrogates
+clear the dominant split margins. We release the benchmark, scripts, processed
+tables, and diagnostic to support reproducible evaluation.

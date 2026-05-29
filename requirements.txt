@@ -1,0 +1,20 @@
+numpy==2.4.4
+pandas==2.2.3
+scikit-learn==1.8.0
+scipy==1.17.1
+torch==2.11.0
+PyYAML==6.0.3
+matplotlib==3.10.0
+joblib==1.5.3
+tqdm==4.67.1
+xgboost==3.2.0
+openml==0.15.1
+pmlb==1.0.1.post3
+lightgbm==4.6.0
+requests==2.32.3
+pillow==12.2.0
+
+# Optional native CatBoost learner. It was listed in the parent requirements
+# but was not present in the inspected environment; scripts fall back to
+# sklearn histogram gradient boosting if CatBoost is absent.
+# catboost>=1.2

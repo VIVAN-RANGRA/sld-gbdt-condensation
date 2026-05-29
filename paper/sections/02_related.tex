@@ -1,0 +1,73 @@
+% 02_related.tex  --  Related Work
+
+\section{Related Work}
+\label{sec:related}
+
+\paragraph{Dataset distillation and condensation.}
+Dataset distillation~\cite{wang2018datasetdistillation} and its successors
+optimise a small synthetic set so that a model retrained on it matches one
+trained on the full data, using gradient matching~\cite{zhao2021dcgm},
+distribution matching~\cite{zhao2023dm}, or trajectory
+matching~\cite{cazenavette2022mtt}. Comprehensive surveys~\cite{lei2023survey,
+yu2023review,sachdeva2023survey} emphasize downstream evaluation, mostly on
+image benchmarks, and do not provide a GBDT-specific split-landscape fidelity
+metric. Extending distillation to tabular data has
+attracted recent
+attention~\cite{kang2024tabdistill,kang2025tabdistill,herurkar2024tabdist,
+medvedev2020tabular}, but these works retain the retrain-and-evaluate paradigm.
+Our contribution is orthogonal: rather than a new condensation method, we
+introduce a no-candidate-retraining diagnostic that measures whether \emph{any}
+condensed set, regardless of the method that produced it, preserves the GBDT
+split-gain landscape.
+
+\paragraph{Coreset selection.}
+Classical coreset methods select real training examples by geometric or
+gradient-based criteria: herding~\cite{welling2009herding} matches
+distribution moments; k-center~\cite{sener2018kcenter} minimises the maximum
+coverage distance; CRAIG~\cite{mirzasoleiman2020craig} and
+GRAD-MATCH~\cite{killamsetty2021gradmatch} match gradient norms via submodular
+maximisation; EL2N and GraNd~\cite{paul2021el2n} use early-training gradient
+norms. All of these methods were designed for and evaluated on differentiable
+models. Translating their selection signals to the GBDT setting is non-trivial
+because GBDTs are not differentiable with respect to the training set; we
+include adapted variants in our 17-method benchmark and show that their
+landscape fidelity, measured by SLD, predicts their tabular AUROC. The
+GBDT-native subsampling methods GOSS~\cite{ke2017lightgbm} and
+MVS~\cite{ibragimov2019mvs} operate per boosting round rather than producing
+a static condensed set; MVS is the theoretically closest prior work, as it
+explicitly minimises the variance of the split-scoring estimator. Data
+valuation~\cite{ghorbani2019shapley,koh2017influence} and influence-function
+methods offer related but complementary perspectives on data contribution; they
+often require retraining on many subsets or differentiable-model assumptions
+and are not directly applicable in their standard form to histogram GBDTs.
+
+\paragraph{Why GBDTs for tabular data.}
+Gradient-boosted decision trees~\cite{friedman2001gbm,chen2016xgboost,
+ke2017lightgbm,prokhorenkova2018catboost} remain one of the strongest practical
+model classes for tabular data~\cite{grinsztajn2022why,borisov2022survey}. This
+motivates a condensation evaluation framework specific to tree-structured
+inductive bias. The split-gain criterion~\cite{loh2011cart,natekin2013tutorial}
+aggregates per-bin gradient statistics, and the resulting landscape fully
+determines which feature and threshold a node selects, a structure that has no
+direct analogue in differentiable models. Our SLD exploits this structure to
+build a measurement instrument that is GBDT-mechanism-specific: it explains
+\emph{why} a condensed set preserves tree behaviour, not merely whether it does.
+
+\paragraph{The C\textsuperscript{2}TC contrast.}
+The most closely related recent work is C\textsuperscript{2}TC~\cite{xu2026c2tc}
+(ICDE 2026), a training-free tabular condensation
+\emph{method}: it optimises class allocation and feature representation via
+class-adaptive clustering to produce a condensed set efficiently. Our work is
+fundamentally different in intent. C\textsuperscript{2}TC is a
+\emph{condenser}: it produces a surrogate dataset. SLD is a
+\emph{measurement instrument}: it audits the fidelity of any surrogate,
+including one produced by C\textsuperscript{2}TC, with respect to the GBDT
+split-gain landscape. Where C\textsuperscript{2}TC is model-agnostic in its
+clustering objective, SLD is GBDT-mechanism-specific: it reads the landscape
+from histogram statistics under a fixed prediction state without retraining on
+each candidate. We do not benchmark C\textsuperscript{2}TC as a baseline in the
+current grid because the experiment package was frozen around methods for which
+we had compatible, reproducible implementations. The artifact repository exposes
+the same condenser interface for adding C\textsuperscript{2}TC-generated sets;
+SLD can then serve as an evaluation layer or as a selection criterion among its
+class-allocation configurations.
