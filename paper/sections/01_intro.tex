@@ -5,13 +5,13 @@
 
 ML engineers and data scientists who train gradient-boosted models on tabular
 data face a recurrent resource tension. A single retraining run on a dataset of
-hundreds of thousands of rows can consume substantial compute; in our scale
-audit, condensed retraining reaches $160\times$--$5{,}734\times$ speedups at
-the largest training sizes. Repeated runs for hyperparameter search, model
-versioning, or data-sharing workflows multiply that cost many times over.
-Condensation is not itself a privacy or compliance guarantee, but a small
-surrogate can be useful when combined with the appropriate governance or privacy
-mechanisms. The natural remedy, replacing the
+hundreds of thousands of rows can consume substantial compute, and repeated
+runs for hyperparameter search, model versioning, or data-sharing workflows
+multiply that cost many times over. SLD is cheap for a different reason: it
+costs one histogram pass under a fixed prediction state, before retraining on
+each candidate surrogate. Condensation is not itself a privacy or compliance
+guarantee, but a small surrogate can be useful when combined with appropriate
+governance or privacy mechanisms. The natural remedy, replacing the
 full dataset with a small, high-fidelity surrogate, is already practiced
 informally through random subsampling and stratified sampling. What is missing
 is a principled way to answer the question that matters most \emph{before}
@@ -47,16 +47,17 @@ We introduce the \emph{Split-Landscape Discrepancy} (SLD), which formalizes
 this comparison as an $\ell_p$ distance between the split-gain landscapes of a
 full dataset and its surrogate (\cref{sec:diagnostic}). Using SLD as a
 measurement instrument, we conduct a systematic comparative evaluation of 17
-condensation methods, spanning classical coresets, gradient-based
-selectors, distribution-matching distillation, and gain-path distillation,
-under a unified protocol across a broad collection of tabular binary
-classification datasets. The analysis is a measurement study; we do not propose
-a new condensation method and we do not claim a new state of the art.
+condensation methods, spanning classical coresets, gradient-based selectors,
+distribution-matching distillation, and gain-path distillation. The 17-method
+audit uses 26 datasets, two budgets, and three seeds; the fuller five-budget,
+five-seed core grid is restricted to five methods. The analysis is a
+measurement study; we do not propose a new condensation method and we do not
+claim a new state of the art.
 
 Our analysis surfaces three empirical findings of practical consequence.
-At the method-mean level, split-regret strongly ranks method families by
-downstream AUROC in the small-to-mid-size benchmark, enabling screening before
-retraining on every candidate.
+At the method-mean level, split-regret strongly separates method families by
+downstream AUROC in the small-to-mid-size benchmark, enabling rejection
+filtering before retraining on every candidate.
 A provably coverage-optimal selector is simultaneously among the weakest methods
 by predictive performance, a demonstration that coverage and structural fidelity
 are independent objectives. At deployment scale, random sampling becomes
@@ -72,16 +73,16 @@ single-best selector.
     the full data under a fixed prediction state (\cref{sec:diagnostic}).
 
   \item \textbf{Systematic comparative analysis.} We present a 17-method
-    evaluation specifically for GBDT-on-tabular settings, pooling results over
-    thousands of
-    dataset $\times$ budget $\times$ seed configurations and measuring both
+    diagnostic audit for GBDT-on-tabular settings and a separate five-method
+    core grid over 26 datasets, five budgets, and five seeds, measuring both
     downstream predictive performance and landscape fidelity
     (\cref{sec:setup,sec:results}).
 
   \item \textbf{Three empirically grounded insights.} A single landscape score
     is method-level rank-correlated with AUROC at Spearman $\rho = -0.87$ in
-    the small-to-mid-size benchmark; within-dataset trends are generally
-    negative after controlling for dataset scale. Coverage and predictive
+    the small-to-mid-size diagnostic grid, making it useful for screening and
+    family-level ordering rather than top-1 selection. Within-dataset trends are
+    generally negative after controlling for dataset scale. Coverage and predictive
     fidelity are decoupled: a $(1-1/e)$-optimal coverage selector is among the
     weakest downstream performers, explained by a reference-chain decomposition
     into structure and leaf-estimate gaps. Structure is robust to perturbation

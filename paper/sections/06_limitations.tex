@@ -63,7 +63,7 @@ the within-dataset variance of SLD, making single-method selection unreliable.
 Future work could combine the landscape score with dataset-level meta-features
 to improve per-instance selection.
 
-Multiclass classification is a thin positive extension (HistDistill $0.910$
-macro-AUROC vs.\ Random $0.897$), but taken together these scopes mark the
-boundary of the diagnostic: SLD is built around the GBDT split-gain objective,
-and its predictive value erodes as a task drifts away from that inductive bias.
+Across eight multiclass datasets, HistDistill obtains $0.910$ one-vs-rest
+macro-AUROC versus Random $0.897$, a thin positive extension rather than a main
+claim; overall, SLD is built around the GBDT split-gain objective, and its
+predictive value erodes as a task drifts away from that inductive bias.

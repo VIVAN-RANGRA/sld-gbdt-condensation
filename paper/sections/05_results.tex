@@ -57,12 +57,19 @@ Random            & $0.724 \pm 0.056$ & 3.63 & 138.3  & 4.0$\times$ \\
 \end{tabular}
 \end{table}
 
+The gradient-sampling AUROC is an audited failure mode rather than a plotting
+artifact: its deployed AUROC is also low in the reference-chain subset
+(\Cref{tab:decomp}), where the error is leaf-estimate dominated. The
+method-level association is not driven only by this point or by HD-Greedy:
+excluding both leaves Spearman $\rho=-0.85$ over the remaining 15 methods.
+
 % ---- Table 3: Universal 17-method audit ----
 \begin{table}[!t]
 \centering
 \caption{Seventeen-method diagnostic audit. Values are method means
 $\pm$95\% CI over dataset clusters, over 156 dataset--budget--seed cells.
-Lower split-regret and higher AUROC are better.}
+Lower split-regret and higher AUROC are better. EL2N and GraNd coincide after
+rounding under the fixed-state adaptation used here.}
 \label{tab:allmethods}
 \tiny
 \setlength{\tabcolsep}{2.5pt}
@@ -90,6 +97,11 @@ HD-Greedy & $0.629\pm0.050$ & $0.437\pm0.106$ \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+Negative leaf gaps mean deployed condensed leaves slightly outperform the
+full-data leaf refit under this diagnostic chain, usually through regularisation
+or favourable condensed weighting; the all-cell decomposition table is released
+in the artifact.
 
 \textbf{Finding 2: Within a dataset, lower raw SLD predicts higher AUROC, but
 pooling across datasets is confounded.}
@@ -275,29 +287,20 @@ half a second in the recorded runs; SLD itself costs one histogram pass.
 \textbf{Scale audit: the cost payoff grows with $N$, while ordering is
 dataset-dependent.}
 \Cref{fig:large-scale,tab:large-scale,tab:large-auroc} report a real large-data
-audit using 400-row condensed sets. Retrain speedup rises from single digits at
-$20$k rows to hundreds or thousands at million-row scale. Random has the best
+audit using 400-row condensed sets. Speedup rises from single digits at $20$k
+rows to hundreds or thousands at million-row scale. Random has the best
 large-$N$ AUROC point estimate on all three datasets, but the three-dataset
-paired audit is not powered to claim statistical superiority: Random's mean
-advantage over HD-Density is $0.034$ AUROC and over HD-Refined is $0.035$
-AUROC, with two-sided Wilcoxon $p=0.25$ in both comparisons. The practical
-reading is convergence among reasonable condensers, not a new winner-take-all
-method ranking.
-This is the regime thesis in one comparison: HD-Refined beats Random in
-24/26 small-to-mid-size datasets in the clustered audit (\Cref{tab:pairwise}),
-yet Random has the largest point estimate on all three very large datasets
-(\Cref{tab:large-auroc}).
+paired audit is underpowered (two-sided Wilcoxon $p=0.25$ vs.\ HD-Refined and
+HD-Density), so the practical reading is convergence among reasonable
+condensers. This is the regime thesis: HD-Refined beats Random in 24/26
+small-to-mid-size datasets (\Cref{tab:pairwise}), yet Random has the largest
+point estimate on all three very large datasets (\Cref{tab:large-auroc}).
 
-The HIGGS case is informative rather than contradictory. Several methods have
-zero root split-regret there, yet their AUROCs differ. This is exactly the
-margin story from \Cref{fig:sldlaw,fig:dose}: at very large $N$, the dominant
-root split is so well separated that many surrogates clear the same margin, and
-leaf-estimate quality or deeper structure becomes the discriminating factor.
-Root-level regret remains useful for rejecting severe failures, but not for
-ranking reasonable surrogates once the top split is saturated. A rule that only
-rejects the obvious gradient-sampling failure retains the winner in all scale
-cells while saving less than $2\%$ of already-small condensed-search time; the
-real cost win comes from training on hundreds of rows rather than millions.
+HIGGS illustrates the same margin mechanism as \Cref{fig:sldlaw,fig:dose}:
+several methods have zero root split-regret because the dominant root split is
+saturated, so leaf estimates or deeper structure determine AUROC. Root-level
+regret still rejects severe failures, but it cannot finely rank reasonable
+surrogates once the top split margin is cleared.
 
 \begin{figure}[!t]
 \centering

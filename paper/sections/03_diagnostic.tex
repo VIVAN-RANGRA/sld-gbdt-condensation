@@ -107,13 +107,14 @@ agreement equals $1.0$ (\cref{sec:results-dose}).
 
 \paragraph{Coverage guarantee.}
 The split-coverage objective is the unweighted fraction of full-data high-gain
-split thresholds whose adjacent bins are represented by at least one selected
-or weighted surrogate point. It is binary threshold coverage, not gain-weighted
+split thresholds, the top-$k$ full-data split candidates used by the coverage
+selector, whose adjacent bins are represented by at least one selected or
+weighted surrogate point. It is binary threshold coverage, not gain-weighted
 path fidelity. As a standard set-coverage objective, it is monotone submodular
 under a cardinality constraint, so greedy maximisation has the usual
-$(1 - 1/e)$ approximation guarantee~\cite{nemhauser1978submodular}. This defines
-the HistDistill-Greedy selector: it achieves near-optimal coverage of the split
-landscape, yet performs poorly by downstream predictive performance
+$(1 - 1/e)$ guarantee~\cite{nemhauser1978submodular}. This defines
+HistDistill-Greedy: it covers the split landscape near-optimally yet performs
+poorly by downstream predictive performance
 (\cref{sec:results-coverage}). The gap between coverage and predictive fidelity is the
 central empirical finding of \cref{sec:results-coverage}.
 
@@ -122,8 +123,9 @@ central empirical finding of \cref{sec:results-coverage}.
 \Cref{alg:sld} summarises the SLD computation. The key property is that, after
 the fixed prediction state is available, scoring a candidate requires only one
 histogram pass and one arithmetic comparison of landscapes; no candidate GBDT is
-trained. The pass costs $O(NFB)$ to build full-data histograms and $O(mFB)$ for
-the surrogate, with shared bins and $O(FB)$ landscape memory per node.
+trained. After shared binning, histogram accumulation costs $O(NF)$ for full
+data and $O(mF)$ for the surrogate; prefix-sum gain evaluation and memory are
+$O(FB)$ per node.
 
 \begin{algorithm}[t]
 \caption{Compute Split-Landscape Discrepancy without candidate retraining}
