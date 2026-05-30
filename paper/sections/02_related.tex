@@ -24,16 +24,18 @@ split-gain landscape.
 Classical coreset methods select real training examples by geometric or
 gradient-based criteria: herding~\cite{welling2009herding} matches
 distribution moments; k-center~\cite{sener2018kcenter} minimises the maximum
-coverage distance; CRAIG~\cite{mirzasoleiman2020craig} and
-GRAD-MATCH~\cite{killamsetty2021gradmatch} match gradient norms via submodular
-maximisation; EL2N and GraNd~\cite{paul2021el2n} use early-training gradient
-norms. All of these methods were designed for and evaluated on differentiable
+coverage distance; the CRAIG coreset method~\cite{mirzasoleiman2020craig} and
+Gradient Matching (GradMatch)~\cite{killamsetty2021gradmatch} match gradient
+norms via submodular maximisation; Error L2 Norm (EL2N) and Gradient Normed
+(GraNd)~\cite{paul2021el2n} use early-training gradient norms. All of these
+methods were designed for and evaluated on differentiable
 models. Translating their selection signals to the GBDT setting is non-trivial
 because GBDTs are not differentiable with respect to the training set; we
 include adapted variants in our 17-method benchmark and show that their
 landscape fidelity, measured by SLD, predicts their tabular AUROC. The
-GBDT-native subsampling methods GOSS~\cite{ke2017lightgbm} and
-MVS~\cite{ibragimov2019mvs} operate per boosting round rather than producing
+GBDT-native subsampling methods Gradient-based One-Side Sampling
+(GOSS)~\cite{ke2017lightgbm} and Minimal Variance Sampling
+(MVS)~\cite{ibragimov2019mvs} operate per boosting round rather than producing
 a static condensed set; MVS is the theoretically closest prior work, as it
 explicitly minimises the variance of the split-scoring estimator. Data
 valuation~\cite{ghorbani2019shapley,koh2017influence} and influence-function
@@ -54,7 +56,8 @@ build a measurement instrument that is GBDT-mechanism-specific: it explains
 \emph{why} a condensed set preserves tree behaviour, not merely whether it does.
 
 \paragraph{The C\textsuperscript{2}TC contrast.}
-The most closely related recent work is C\textsuperscript{2}TC~\cite{xu2026c2tc}
+The most closely related recent work is C\textsuperscript{2}TC
+(Class-Adaptive Clustering for Tabular Condensation)~\cite{xu2026c2tc}
 (ICDE 2026), a training-free tabular condensation method that optimises class
 allocation and feature representation through class-adaptive clustering. Our
 work is different in intent: C\textsuperscript{2}TC is a condenser, while SLD

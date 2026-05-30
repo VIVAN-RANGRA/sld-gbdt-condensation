@@ -25,15 +25,19 @@ surrogates: GOSS/MVS select the top scored instances under the fixed GBDT state;
 GraNd, EL2N, CRAIG, and GradMatch use their published scoring or matching rules;
 DistributionMatching runs on processed tabular features and shares full-data
 bin edges for SLD scoring.
+Short names follow the original methods: GOSS is Gradient-based One-Side
+Sampling, MVS is Minimal Variance Sampling, GraNd is Gradient Normed, EL2N is
+Error L2 Norm, CRAIG is a gradient-matching coreset method, DM abbreviates
+DistributionMatching, and HD abbreviates HistDistill.
 
 \subsection{Datasets and Protocol}
 
 Our experiments use public tabular datasets drawn from
-OpenML~\cite{vanschoren2013openml} and PMLB~\cite{olson2017pmlb}; several
-entries originate from UCI-style benchmark datasets. The full inventory appears
-in \Cref{tab:datasets}. The artifact repository lists the exact OpenML/PMLB
-identifiers and processed split checksums. The core study is on binary
-classification. For each dataset we
+OpenML~\cite{vanschoren2013openml} and the Penn Machine Learning Benchmarks
+(PMLB)~\cite{olson2017pmlb}; several entries originate from UCI-style benchmark
+datasets. The full inventory appears in \Cref{tab:datasets}. The artifact
+repository lists the exact OpenML/PMLB identifiers and processed split
+checksums. The core study is on binary classification. For each dataset we
 condense the training set to five budgets, $\{10, 25, 50, 100, 200\}$ rows, and
 repeat every (dataset, method, budget) configuration over five random seeds.
 Across the 26 binary datasets and the five core methods this gives $3{,}250$
@@ -45,15 +49,19 @@ seeds, giving 156 cells per method for \Cref{fig:universal}. The decomposition
 table is a diagnostic subset used only to illustrate the two reference-chain
 failure modes, so its absolute AUROCs are not compared to the pooled headline
 values. Additional probes include the 1,872-cell split-noise robustness study,
-multiclass, regression, HPO-transfer, and a Covertype/SUSY/HIGGS scale audit
-with 400-row condensed sets; \cref{sec:limits,sec:results-scale} give details.
+multiclass, regression, hyperparameter-optimization (HPO) transfer, and a
+Covertype/SUSY/HIGGS scale audit with 400-row condensed sets;
+\cref{sec:limits,sec:results-scale} give details.
 
 \subsection{Metrics}
 
-\textbf{Downstream predictive performance.} We score binary tasks by AUROC,
-multiclass tasks by one-vs-rest macro-AUROC, and regression tasks by $R^2$.
-Every score is computed on a held-out test set with the model retrained on the
-condensed set.
+\textbf{Downstream predictive performance.} We score binary tasks by area under
+the receiver operating characteristic curve (AUROC), a threshold-free ranking
+metric; multiclass tasks by one-vs-rest macro-AUROC, the class-averaged AUROC;
+and regression tasks by coefficient of determination ($R^2$). Every score is
+computed on a held-out test set with the model retrained on the condensed set.
+Reported 95\% CIs are confidence intervals over dataset clusters unless a table
+states otherwise.
 
 \textbf{Fidelity.} \eqref{eq:sld} defines the relative $\ell_\infty$ landscape
 distance, while split-regret is the normalised gain lost when a node follows the
@@ -83,10 +91,10 @@ The reference landscape uses XGBoost hist trees: 80 rounds, depth 3, learning
 rate 0.08, $\lambda=1$, $\gamma=0$, subsample/column subsample 0.9,
 binary-logistic objective, and fixed seeds. Downstream GBDT-mechanism results
 use the same setting; robustness slots add LightGBM, CatBoost/fallback
-histogram boosting, random forests, and MLPs. LightGBM uses 120 trees, depth 4,
-learning rate 0.06, 15 leaves, subsample/column subsample 0.9, and default
-\texttt{min\_child\_samples}=20; the artifact includes the budget-aware sweep
-over $\{1,2,5,10,20\}$.
+histogram boosting, random forests, and multilayer perceptrons (MLPs). LightGBM
+uses 120 trees, depth 4, learning rate 0.06, 15 leaves, subsample/column
+subsample 0.9, and default \texttt{min\_child\_samples}=20; the artifact
+includes the budget-aware sweep over $\{1,2,5,10,20\}$.
 
 \subsection{Reproducibility}
 
@@ -94,7 +102,7 @@ All datasets are public and preprocessing is deterministic: categorical
 features follow the scripts, numerical features use shared full-data bin edges,
 and splits use stratified seeds where labels permit. The artifact repository,
 \url{https://github.com/VIVAN-RANGRA/sld-gbdt-condensation} (tag
-\texttt{icdm-repro-v3}), contains exact configs, seeds, package versions,
+\texttt{icdm-repro-v4}), contains exact configs, seeds, package versions,
 processed metric CSVs, plotting scripts, and runbook commands, including
 \texttt{scripts/19\_run\_icdm\_core.py} with
 \texttt{configs/dataset26\_binary.yaml} and seeds 0--4.

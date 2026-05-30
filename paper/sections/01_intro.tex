@@ -4,65 +4,56 @@
 \label{sec:intro}
 
 ML engineers and data scientists who train gradient-boosted models on tabular
-data face a recurrent resource tension. A single retraining run on a dataset of
-hundreds of thousands of rows can consume substantial compute, and repeated
-runs for hyperparameter search, model versioning, or data-sharing workflows
-multiply that cost many times over. SLD is cheap for a different reason: it
-costs one histogram pass under a fixed prediction state, before retraining on
-each candidate surrogate. Condensation is not itself a privacy or compliance
-guarantee, but a small surrogate can be useful when combined with appropriate
-governance or privacy mechanisms. The natural remedy, replacing the
-full dataset with a small, high-fidelity surrogate, is already practiced
-informally through random subsampling and stratified sampling. What is missing
-is a principled way to answer the question that matters most \emph{before}
-committing to retraining on a surrogate: does this condensed set faithfully
-preserve the structure that the booster would have learned from the original
-data?
+data face a recurring operational problem: every candidate condensed dataset is
+usually judged by retraining a model on it. That is acceptable for a few
+surrogates, but it becomes costly when condensation is used inside repeated
+model development, hyperparameter search, data versioning, or governance
+workflows. A small surrogate can make these workflows cheaper and easier to
+share, although condensation is not itself a privacy or compliance guarantee.
+The applied question is therefore not only \emph{which} surrogate gives the
+best final AUROC, but which candidates are worth retraining on at all.
 
-The dataset condensation and coreset-selection literature has produced a rich
-supply of methods to construct small surrogates~\cite{wang2018datasetdistillation,
-zhao2021dcgm,welling2009herding,mirzasoleiman2020craig}. For tabular data
-specifically, several methods have recently been adapted or purpose-built for
-non-image settings~\cite{kang2025tabdistill,xu2026c2tc}. Yet the evaluation
-paradigm is almost universally the same: train a fresh model on the condensed
-set, measure downstream predictive performance, and compare. This protocol has two practical
-shortcomings. First, it requires precisely the retraining one hoped to avoid.
-Second, it collapses a mechanistic question, namely \emph{why} a condensed set
-works or fails, into a scalar outcome that gives no guidance for debugging or
-selection.
+Existing condensation and coreset methods provide many ways to build such
+surrogates~\cite{wang2018datasetdistillation,zhao2021dcgm,welling2009herding,
+mirzasoleiman2020craig}, including recent methods designed for tabular
+data~\cite{kang2025tabdistill,xu2026c2tc}. Their common evaluation protocol,
+however, remains largely black-box: train a fresh model on each condensed set,
+measure downstream predictive performance, and compare. This is the right final
+validation step, but it is a poor diagnostic. It does not say whether a bad
+surrogate failed because it missed important split thresholds, distorted leaf
+statistics, or simply lacked enough budget. For practitioners, that distinction
+matters: a useful diagnostic should reject clearly bad surrogates early and
+explain which failure mode is being observed.
 
-Gradient-boosted decision trees~\cite{friedman2001gbm,chen2016xgboost,
-ke2017lightgbm} offer a distinctive opportunity to break this cycle. A GBDT
-tree structure is determined by split-selection decisions: at each node, the
-algorithm chooses the feature and threshold that maximize the regularized gain
-criterion (\cref{sec:diagnostic}). Predictive behaviour also depends on leaf
-values, learning rate, boosting rounds, missing-value handling, and
-regularization. The gain criterion is histogram-sufficient once first- and
-second-order loss statistics are fixed; those statistics may come from a root
-base score or from a reference booster. Comparing the histogram landscapes of
-the full and condensed datasets is therefore a no-candidate-retraining screening
-diagnostic, not a claim that no model state is ever used.
+Histogram gradient-boosted decision trees (GBDTs) offer a concrete handle for
+such a diagnostic. At each node, a GBDT chooses the feature and threshold that
+maximise a regularised split-gain criterion~\cite{friedman2001gbm,
+chen2016xgboost,ke2017lightgbm}. Given a fixed prediction state, the candidate
+split gains are determined by binned sums of first- and second-order loss
+statistics. The resulting table of gains is the model's \emph{split-gain
+landscape}: it records which structural decisions the booster is likely to
+make before leaf values are estimated. If a condensed set preserves this
+landscape, it has a plausible route to preserving the learned tree structure;
+if it distorts the landscape, downstream retraining is already suspect.
 
-We introduce the \emph{Split-Landscape Discrepancy} (SLD), which formalizes
-this comparison as an $\ell_p$ distance between the split-gain landscapes of a
-full dataset and its surrogate (\cref{sec:diagnostic}). Using SLD as a
-measurement instrument, we conduct a systematic comparative evaluation of 17
-condensation methods, spanning classical coresets, gradient-based selectors,
-distribution-matching distillation, and gain-path distillation. The 17-method
-audit uses 26 datasets, two budgets, and three seeds; the fuller five-budget,
-five-seed core grid is restricted to five methods. The analysis is a
-measurement study; we do not propose a new condensation method and we do not
-claim a new state of the art.
+We introduce \emph{Split-Landscape Discrepancy} (SLD), a
+no-candidate-retraining diagnostic that compares the split-gain landscape of
+the full data with that of a candidate surrogate under the same preprocessing
+and fixed prediction state. SLD is not a claim that no model state is ever
+used; rather, it replaces retraining on every candidate with a histogram-pass
+screening measurement. In an applied pipeline, its role is to flag high-risk
+surrogates and compare method families before spending retraining compute on
+the final candidates.
 
-Our analysis surfaces three empirical findings of practical consequence.
-At the method-mean level, split-regret strongly separates method families by
-downstream AUROC in the small-to-mid-size benchmark, enabling rejection
-filtering before retraining on every candidate.
-A provably coverage-optimal selector is simultaneously among the weakest methods
-by predictive performance, a demonstration that coverage and structural fidelity
-are independent objectives. At deployment scale, random sampling becomes
-difficult to beat, and SLD is better read as a rejection signal than as a
-single-best selector.
+Using SLD as a measurement instrument, we evaluate 17 condensation methods
+spanning classical coresets, gradient-based selectors, distribution matching,
+GBDT-native sampling, and gain-path variants. The broad 17-method audit uses a
+lighter diagnostic grid, while a fuller five-budget, five-seed core grid
+supports the headline performance comparisons for the main methods. The study
+is deliberately not a new condensation algorithm or a state-of-the-art claim.
+It is a benchmark and diagnostic analysis: when does a landscape score predict
+downstream behaviour, when does it fail, and what does that imply for using
+condensed datasets in GBDT workflows?
 
 \smallskip
 \noindent\textbf{Contributions.}

@@ -9,14 +9,14 @@ introduce Split-Landscape Discrepancy (SLD), a no-candidate-retraining
 diagnostic that compares full and condensed split-gain landscapes under fixed
 preprocessing and prediction state.
 
-In a 17-method audit on 26 datasets using two budgets and three seeds,
-method-level split-regret is strongly rank-correlated with downstream AUROC in
-the small-to-mid-size regime (Spearman $\rho=-0.87$); a separate five-method,
-five-budget, five-seed core grid supports the headline performance comparisons.
-SLD is therefore best used as a rejection filter and method-family diagnostic,
-not as a single-dataset top-1 selector. It also exposes why coverage can fail:
-a greedy high-gain threshold-coverage selector is among the weakest performers
-because unweighted coverage differs from gain-weighted structural fidelity. At
-very large scale, random sampling becomes hard to beat and root-regret loses
-resolution as reasonable surrogates clear dominant split margins. We release
-the benchmark, scripts, processed tables, and diagnostic.
+Across a broad audit of tabular condensers, method-level split-regret is highly
+correlated with downstream area under the receiver operating characteristic
+curve (AUROC) in the small-to-mid-size regime, while a separate core grid
+supports the headline performance comparisons. SLD is therefore best used as a
+rejection filter and method-family diagnostic, not as a selector for the single
+best method on a new dataset. It also exposes why coverage can fail: a greedy
+high-gain threshold-coverage selector can perform poorly because unweighted
+coverage differs from gain-weighted structural fidelity. At very large scale,
+random sampling becomes hard to beat and root-regret loses resolution as
+reasonable surrogates clear dominant split margins. We release the benchmark,
+scripts, processed tables, and diagnostic.
