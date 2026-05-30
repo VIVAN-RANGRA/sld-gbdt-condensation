@@ -35,16 +35,17 @@ on very large datasets, root split-regret loses rank resolution.
 % ---- Table 2: Headline performance + fidelity ----
 \begin{table}[!t]
 \centering
-\caption{Headline performance and fidelity for five core methods (3,250 cells).
+\caption{Headline performance and diagnostics for five core methods (3,250 cells).
 AUROC uses mean$\pm$95\% CI over dataset clusters; avg.\ rank lower is better.
-Speedup is relative to full-data retraining on the same dataset/learner.}
+Raw SLD$_\infty$ is diagnostic only and is not a cross-dataset fidelity score;
+speedup is relative to full-data retraining on the same dataset/learner.}
 \label{tab:headline}
 \scriptsize
 \setlength{\tabcolsep}{3pt}
 \begin{tabular}{@{}lcccc@{}}
 \toprule
 \textbf{Method} & \textbf{AUROC} & \textbf{Rank} &
-  \textbf{Raw SLD}$_\infty$ & \textbf{Speedup} \\
+  \textbf{Raw SLD}$_\infty$ \textbf{diag.} & \textbf{Speedup} \\
 \midrule
 Full data & $0.812 \pm 0.062$ & -- & -- & 1.0$\times$ \\
 Legacy gain-path  & $0.743 \pm 0.057$ & 2.60 & 99.4  & 3.9$\times$ \\
@@ -327,30 +328,6 @@ HIGGS & 10.50M & $0.11$ & $5{,}734\times$ \\
 \end{tabular}
 \end{table}
 
-\begin{table}[!t]
-\centering
-\caption{Large-scale AUROC at the largest training size. Full-data AUROCs are
-0.897, 0.873, and 0.803 for Covertype, SUSY, and HIGGS. Random wins the
-condensed point estimates, but the three-dataset paired audit is underpowered
-($p=0.25$ against HD-Refined and HD-Density); no per-row CI is claimed because
-the large-scale audit uses one full run per dataset/method.}
-\label{tab:large-auroc}
-\scriptsize
-\setlength{\tabcolsep}{3pt}
-\begin{tabular}{@{}lccc@{}}
-\toprule
-\textbf{Method} & \textbf{Cov.} & \textbf{SUSY} & \textbf{HIGGS} \\
-\midrule
-Full data & 0.897 & 0.873 & 0.803 \\
-Random & \textbf{0.792} & \textbf{0.839} & \textbf{0.687} \\
-HD-Refined & 0.747 & 0.818 & 0.648 \\
-HD-Density & 0.781 & 0.794 & 0.641 \\
-Herding & 0.719 & 0.780 & 0.450 \\
-Grad.\ samp. & 0.377 & 0.219 & 0.364 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
 \begin{figure}[!t]
 \centering
 \begin{tikzpicture}[
@@ -385,8 +362,8 @@ Grad.\ samp. & 0.377 & 0.219 & 0.364 \\
 \begin{table}[!t]
 \centering
 \caption{Dataset-clustered core-method comparisons. $\Delta$ is the paired mean
-AUROC difference over 3,250 cells; confidence intervals bootstrap the 26 dataset
-clusters.}
+AUROC difference over 650 dataset--budget--seed cells; confidence intervals
+bootstrap the 26 dataset clusters.}
 \label{tab:pairwise}
 \scriptsize
 \setlength{\tabcolsep}{2.5pt}
