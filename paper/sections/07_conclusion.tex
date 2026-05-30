@@ -3,43 +3,31 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-Measuring mechanism, not just downstream predictive performance, reveals things
-that a retrain-and-compare protocol cannot. For gradient-boosted decision trees
-on tabular data, the split-gain landscape is a central mechanism for
-tree-structure selection: it determines which features and thresholds the
-booster commits to before a leaf value is estimated. Comparing landscapes
-between a full dataset and its surrogate, through the Split-Landscape
-Discrepancy, yields a no-candidate-retraining diagnostic whose method-level
-split-regret correlates with downstream AUROC in the small-to-mid-size
-17-method diagnostic grid at Spearman $-0.87$. The scale audit qualifies this
-claim: once very large datasets make the dominant split margins easy to
-preserve, random sampling becomes difficult to beat and root split-regret
-becomes a rejection filter rather than a fine-grained ranker.
+We introduced the Split-Landscape Discrepancy, a no-candidate-retraining metric
+that compares full-data and surrogate GBDT split-gain landscapes in one
+histogram pass, and used it to study 17 condensation methods across 26 tabular
+datasets. Method-level split-regret correlates with downstream AUROC at
+Spearman $\rho=-0.87$ in the small-to-mid-size diagnostic grid, showing that the
+landscape comparison is a useful screening and family-ranking tool before any
+candidate is retrained. The large-scale audit qualifies the claim: when
+dominant split margins saturate, root split-regret becomes a rejection filter
+rather than a fine-grained ranker.
 
-The most practically consequential finding is that \emph{coverage is not
-predictive fidelity}. A condensation method with a provable near-optimal
-guarantee on unweighted split-threshold coverage is simultaneously among the
-weakest downstream performers in the pooled audit. The reason is structural:
-unweighted coverage fills the landscape broadly, while AUROC depends on
-gain-weighted, Hessian-weighted, path-sensitive structure preservation. The
-reference-chain decomposition makes this precise: the coverage-optimal method's
-failure is a structure failure rather than a leaf-value failure.
+The central finding overturns a natural intuition: a selector with a provable
+$(1-1/e)$ coverage guarantee is still among the weakest downstream performers
+in the audit. Breadth of split-threshold coverage is not a proxy for predictive
+fidelity, because AUROC depends on preserving the gain-weighted structure of
+the dominant splits, not on counting reproduced thresholds. The reference-chain
+decomposition (\cref{eq:decomp}) operationalises this distinction: coverage
+failure is a structure failure, not a leaf failure, and each failure mode has a
+distinct remedy, making the decomposition a practical debugging tool.
 
-We also delimit the scope of these findings. Regression tasks are
-structure-dominated in a way that current condensers cannot overcome.
-Hyperparameter transfer from condensed sets to full-data rankings is weak. At
-deployment scale, reasonable condensers can converge in root split-regret while
-still differing in leaf estimates and deeper structure. These boundaries
-reinforce the role of SLD as a rejection filter and measurement instrument, not
-a single-best-method selector.
-
-The applied workflow is therefore direct: before choosing a condensation
-strategy, compute SLD in a histogram pass and use split-regret to reject bad
-candidates. This screens out poor surrogates before retraining on every
-candidate; when $N$ is very large and several candidates clear the dominant
-split margins, choose among the reasonable surrogates by budget, speed, and
-downstream validation. Coverage metrics should not be used as an AUROC proxy,
-and for regression tasks or HPO transfer condensed sets should be treated as
-approximations to validate rather than substitutes for the full data. We release
-the diagnostic and benchmark in the repository to make this workflow
-reproducible and extensible to new condensation methods as they emerge.
+The diagnostic reaches its limits at regression tasks, where structure mismatch
+dominates and small condensed sets cannot overcome it; at HPO transfer, where
+configuration rankings change even when final AUROC is similar; and at very
+large scale, where reasonable condensers clear the dominant root margins and
+random sampling becomes difficult to beat. Within those boundaries, the
+workflow is simple: compute split-regret to screen out poor candidates, prefer
+low-regret methods when margins are not saturated, and validate
+hyperparameter and regression decisions on full data. We release the benchmark
+and implementation to support future evaluations of new condensation methods.
