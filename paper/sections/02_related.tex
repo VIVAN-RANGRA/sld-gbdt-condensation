@@ -11,8 +11,7 @@ distribution matching~\cite{zhao2023dm}, or trajectory
 matching~\cite{cazenavette2022mtt}. Comprehensive surveys~\cite{lei2023survey,
 yu2023review,sachdeva2023survey} emphasize downstream evaluation, mostly on
 image benchmarks, and do not provide a GBDT-specific split-landscape fidelity
-metric. Extending distillation to tabular data has
-attracted recent
+metric. Extending distillation to tabular data has attracted recent
 attention~\cite{kang2024tabdistill,kang2025tabdistill,herurkar2024tabdist,
 medvedev2020tabular}, but these works retain the retrain-and-evaluate paradigm.
 Our contribution is orthogonal: rather than a new condensation method, we
@@ -32,7 +31,7 @@ methods were designed for and evaluated on differentiable
 models. Translating their selection signals to the GBDT setting is non-trivial
 because GBDTs are not differentiable with respect to the training set; we
 include adapted variants in our 17-method benchmark and show that their
-landscape fidelity, measured by SLD, predicts their tabular AUROC. The
+landscape fidelity, measured by SLD, tracks their tabular AUROC. The
 GBDT-native subsampling methods Gradient-based One-Side Sampling
 (GOSS)~\cite{ke2017lightgbm} and Minimal Variance Sampling
 (MVS)~\cite{ibragimov2019mvs} operate per boosting round rather than producing

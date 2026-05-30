@@ -44,13 +44,13 @@ Across the 26 binary datasets and the five core methods this gives $3{,}250$
 retrained-model evaluations for headline performance (\Cref{tab:headline}) and
 $650$ landscape-fidelity measurements, one per dataset, method, and budget.
 
-The broader 17-method audit uses the same 26 datasets, budgets 25/50, and three
-seeds, giving 156 cells per method for \Cref{fig:universal}. The decomposition
-table is a diagnostic subset used only to illustrate the two reference-chain
-failure modes, so its absolute AUROCs are not compared to the pooled headline
-values. Additional probes include the 1,872-cell split-noise robustness study,
-multiclass, regression, hyperparameter-optimization (HPO) transfer, and a
-Covertype/SUSY/HIGGS scale audit with 400-row condensed sets;
+The broader 17-method analysis uses the same 26 datasets, budgets 25/50, and
+three seeds, giving 156 cells per method for \Cref{fig:universal}. The
+decomposition comparison isolates the two reference-chain failure modes; its
+absolute AUROCs are not compared to the pooled headline values. Additional
+studies include the 1,872-cell split-noise robustness analysis, multiclass
+classification, regression, hyperparameter optimisation (HPO) transfer, and a
+large-scale analysis on Covertype/SUSY/HIGGS with 400-row condensed sets;
 \cref{sec:limits,sec:results-scale} give details.
 
 \subsection{Metrics}
@@ -67,7 +67,8 @@ states otherwise.
 distance, while split-regret is the normalised gain lost when a node follows the
 surrogate's argmax split rather than the full-data one. The reported SLD columns
 and \Cref{fig:sldlaw} use raw $\ell_\infty$ landscape error to expose the scale
-confounding in Finding~2; these raw values are not cross-dataset scores.
+confounding in the within-dataset analysis; these raw values are not
+cross-dataset scores.
 Split-regret is the primary normalised ranking metric. Both are read off the
 histogram statistics before retraining on any candidate surrogate.
 
@@ -91,8 +92,8 @@ The reference landscape and primary downstream learner use histogram XGBoost.
 Robustness checks additionally use LightGBM, CatBoost/fallback histogram
 boosting, random forests, and multilayer perceptrons (MLPs). All datasets are
 public and preprocessing is deterministic: categorical features follow the
-repository scripts, numerical features use shared full-data bin edges, and
-splits use stratified seeds where labels permit. The repository,
+repository implementation, numerical features use shared full-data bin edges,
+and splits use stratified seeds where labels permit. The repository,
 \url{https://github.com/VIVAN-RANGRA/sld-gbdt-condensation}, contains the exact
 hyperparameters, seeds, package versions, processed metric CSVs, plotting code,
 and commands needed to reproduce the reported tables.
