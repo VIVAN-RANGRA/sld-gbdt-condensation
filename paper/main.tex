@@ -19,6 +19,7 @@
 
 % Graphics
 \usepackage{graphicx}
+\usepackage{stfloats}
 
 % Tables
 \usepackage{booktabs}
@@ -234,8 +235,30 @@ Distrib.
 \end{tabular}
 \end{table}
 
-% ---- Dataset inventory ----
-\begin{table*}[!t]
+% ============================================================
+%  SECTION 5: RESULTS
+% ============================================================
+
+\input{sections/05_results}
+
+% ============================================================
+%  SECTION 6: SCOPE AND LIMITATIONS
+% ============================================================
+
+\input{sections/06_limitations}
+
+% ============================================================
+%  SECTION 7: CONCLUSION
+% ============================================================
+
+\input{sections/07_conclusion}
+
+% ============================================================
+%  BIBLIOGRAPHY
+% ============================================================
+
+% ---- Appendix table: dataset inventory ----
+\begin{table*}[!b]
 \centering
 \caption{Expanded 26-dataset binary benchmark inventory. OpenML entries give dataset
 ID/task ID when a task was used; PMLB entries use exact PMLB identifiers.
@@ -280,54 +303,6 @@ tic\_tac\_toe & OpenML d50/t49 & 958 & 9 \\
 \end{tabular}
 }
 \end{table*}
-
-% ============================================================
-%  SECTION 5: RESULTS
-% ============================================================
-
-\input{sections/05_results}
-
-% ============================================================
-%  SECTION 6: SCOPE AND LIMITATIONS
-% ============================================================
-
-\input{sections/06_limitations}
-
-% ============================================================
-%  SECTION 7: CONCLUSION
-% ============================================================
-
-\input{sections/07_conclusion}
-
-% ============================================================
-%  BIBLIOGRAPHY
-% ============================================================
-
-\begin{center}
-\refstepcounter{table}\label{tab:large-auroc}
-{\footnotesize \textbf{TABLE~\thetable}\\[-0.5ex]
-Large-scale AUROC at the largest training size. Full-data AUROCs are
-0.897, 0.873, and 0.803 for Covertype, SUSY, and HIGGS. Random wins the
-condensed point estimates, but the three-dataset paired audit is underpowered
-($p=0.25$ against HD-Refined and HD-Density); no per-row CI is claimed because
-the scale audit uses one full run per dataset/method.\par}
-\vspace{0.4ex}
-{\scriptsize
-\setlength{\tabcolsep}{3pt}
-\begin{tabular}{@{}lccc@{}}
-\toprule
-\textbf{Method} & \textbf{Cov.} & \textbf{SUSY} & \textbf{HIGGS} \\
-\midrule
-Full data & 0.897 & 0.873 & 0.803 \\
-Random & \textbf{0.792} & \textbf{0.839} & \textbf{0.687} \\
-HD-Refined & 0.747 & 0.818 & 0.648 \\
-HD-Density & 0.781 & 0.794 & 0.641 \\
-Herding & 0.719 & 0.780 & 0.450 \\
-Grad.\ samp. & 0.377 & 0.219 & 0.364 \\
-\bottomrule
-\end{tabular}
-}
-\end{center}
 
 \begingroup
 \footnotesize

@@ -328,6 +328,30 @@ HIGGS & 10.50M & $0.11$ & $5{,}734\times$ \\
 \end{tabular}
 \end{table}
 
+\begin{table}[!t]
+\centering
+\caption{Large-scale AUROC at the largest training size. Full-data AUROCs are
+0.897, 0.873, and 0.803 for Covertype, SUSY, and HIGGS. Random wins the
+condensed point estimates, but the three-dataset paired audit is underpowered
+($p=0.25$ against HD-Refined and HD-Density); no per-row CI is claimed because
+the large-scale audit uses one full run per dataset/method.}
+\label{tab:large-auroc}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+\textbf{Method} & \textbf{Cov.} & \textbf{SUSY} & \textbf{HIGGS} \\
+\midrule
+Full data & 0.897 & 0.873 & 0.803 \\
+Random & \textbf{0.792} & \textbf{0.839} & \textbf{0.687} \\
+HD-Refined & 0.747 & 0.818 & 0.648 \\
+HD-Density & 0.781 & 0.794 & 0.641 \\
+Herding & 0.719 & 0.780 & 0.450 \\
+Grad.\ samp. & 0.377 & 0.219 & 0.364 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \begin{figure}[!t]
 \centering
 \begin{tikzpicture}[
