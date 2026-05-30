@@ -70,9 +70,8 @@ interaction untested, we ran a compatibility audit using the official
 C\textsuperscript{2}TC code on the Adult split at budget 200. The generated
 surrogate achieved AUROC $0.769$, but had raw $\mathrm{SLD}_\infty=1228.21$,
 relative $\mathrm{SLD}_\infty=4.72$, and root agreement $=0.0$. We interpret
-this as a compatibility and scope check, not a comparative result: budget 200
-and the synthetic C\textsuperscript{2}TC surrogate fall in exactly the regime
-where our own scale and margin analyses warn that root-level SLD can lose fine
-AUROC resolution. The run confirms that SLD can audit
-C\textsuperscript{2}TC-generated surrogates, but it is not a full
-C\textsuperscript{2}TC baseline.
+this as a compatibility and scope check, not a comparative result. Because this
+is a single Adult-budget-200 compatibility run, we do not interpret the result as
+evidence about C\textsuperscript{2}TC's general performance. The run confirms
+that SLD can audit C\textsuperscript{2}TC-generated surrogates, but it is not a
+full C\textsuperscript{2}TC baseline.

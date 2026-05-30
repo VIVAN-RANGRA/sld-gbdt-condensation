@@ -154,16 +154,14 @@ def fig_c1():
     label("histdistill_greedy", "HD-Greedy:\nhighest regret",
           -0.018, 0.020, ha="right")
     label("gradient_sampling", "Gradient sampling:\nleaf failure",
-          0.012, 0.045, ha="left")
+          0.014, 0.050, ha="left")
 
     ax.set_xlabel(r"Split-regret  (no candidate retraining)")
     ax.set_ylabel("Downstream AUROC")
-    ax.text(0.97, 0.93,
-            r"Spearman $\rho=-0.87$" + "\n" + r"OLS slope $=-0.91$",
-            transform=ax.transAxes, ha="right", va="top", fontsize=7.5,
-            bbox=dict(boxstyle="round,pad=0.3", fc="white", ec="0.7", lw=0.6))
-    ax.legend(loc="lower left", handletextpad=0.2, borderpad=0.2,
-              labelspacing=0.25)
+    # family legend placed below the axes so it never overlaps points/labels
+    ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.22), ncol=3,
+              handletextpad=0.2, columnspacing=0.9, borderpad=0.2,
+              labelspacing=0.3, fontsize=6.8)
     ax.set_ylim(0.33, 0.79)
     savefig(fig, "fig_c1_universal.png")
 
@@ -207,24 +205,22 @@ def fig_c2():
 
     # within-dataset reference label (only one legend entry needed)
     ax.plot([], [], color=CB["blue"], lw=1.4,
-            label="within-dataset trends")
+            label=r"within-dataset fits ($\rho\!\approx\!-0.56$)")
 
     # pooled regression line (the misleading aggregate)
     s, b, _, _, _ = stats.linregress(np.log10(cells[sld_col]), cells["auroc"])
     xs = np.logspace(np.log10(cells[sld_col].min()),
                      np.log10(cells[sld_col].max()), 50)
     ax.plot(xs, b + s * np.log10(xs), color=CB["red"], lw=2.4, zorder=5,
-            label="pooled trend (positive)")
+            label=r"pooled fit ($\rho\!=\!+0.31$)")
 
     ax.set_xlabel(r"Raw $\mathrm{SLD}_\infty$  (lower = more faithful)")
     ax.set_ylabel("Downstream AUROC")
     ax.set_xscale("log")
     ax.set_ylim(0.45, 0.95)
-    ax.text(0.03, 0.04,
-            "within dataset: " + r"$\rho \approx -0.56$" +
-            "\npooled: " + r"$\rho = +0.31$" + "  (Simpson's paradox)",
-            transform=ax.transAxes, ha="left", va="bottom", fontsize=7.2,
-            bbox=dict(boxstyle="round,pad=0.3", fc="white", ec="0.7", lw=0.6))
+    # legend below the axes so the stat labels never sit on top of the cloud
+    ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.22), ncol=2,
+              handletextpad=0.5, columnspacing=1.0, fontsize=7)
     savefig(fig, "fig_c2_sldlaw.png")
 
 
@@ -303,18 +299,22 @@ def fig_c4():
                     xytext=(row["structure_error"] + dx,
                             row["leaf_estimate_recovery"] + dy),
                     fontsize=7, ha=ha, va="center", color=color,
+                    bbox=dict(boxstyle="round,pad=0.25", fc="white",
+                              ec="none", alpha=0.92),
                     arrowprops=dict(arrowstyle="-", lw=0.6, color="0.5"))
 
-    lab("histdistill_greedy", "HistDistill-Greedy\n(structure failure)",
-        -0.004, 0.10, ha="right", color=CB["red"])
+    lab("histdistill_greedy", "HD-Greedy\n(structure failure)",
+        -0.004, 0.09, ha="right", color=CB["red"])
     lab("gradient_sampling", "Gradient sampling\n(leaf failure)",
         0.004, -0.04, ha="left", color=CB["orange"])
-    lab("histdistill_refined", "faithful gain methods",
-        0.004, 0.03, ha="left", color=CB["blue"])
+    # move label below the dot cluster, well inside the plot area
+    lab("histdistill_refined", "faithful gain\nmethods",
+        0.018, -0.10, ha="left", color=CB["blue"])
 
     ax.axhline(0, color="0.6", lw=0.6, ls=":")
-    ax.set_xlabel("Structure error")
-    ax.set_ylabel("Leaf-estimate gap")
+    ax.set_ylim(-0.15, 0.41)
+    ax.set_xlabel("Structure error  (higher = worse)")
+    ax.set_ylabel("Leaf-estimate gap  (higher = worse)")
     savefig(fig, "fig_c4_decomp.png")
 
 

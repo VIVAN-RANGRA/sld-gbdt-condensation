@@ -21,8 +21,10 @@ HistDistill-Density (controlled landscape-fidelity diagnostic baselines), gain
 sketch, gain-path sketch, and the legacy gain-path refined method. The last
 three are prior gain-path methods; the paper's main claim is the diagnostic and
 benchmark, not a new state-of-the-art condenser. All adaptations produce static
-surrogates: GOSS/MVS select the top scored instances under the fixed GBDT state;
-GraNd, EL2N, CRAIG, and GradMatch use their published scoring or matching rules;
+surrogates: GOSS/MVS are converted into static weighted subsets using their
+per-instance sampling scores under the fixed GBDT state; GraNd/EL2N use
+fixed-state instance scores; CRAIG/GradMatch use their published
+subset-selection objectives over the same processed feature/score representation;
 DistributionMatching runs on processed tabular features and shares full-data
 bin edges for SLD scoring.
 Short names follow the original methods: GOSS is Gradient-based One-Side

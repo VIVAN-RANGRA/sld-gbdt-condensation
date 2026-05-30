@@ -11,13 +11,15 @@ Spearman $\rho=-0.87$, showing that the landscape comparison is a reliable
 screening and family-ranking tool before any candidate is retrained.
 
 The central finding overturns a natural intuition: a selector with a provable
-$(1-1/e)$ coverage guarantee achieves the worst downstream accuracy in the
+$(1-1/e)$ coverage guarantee achieves the lowest downstream AUROC in the
 study. Breadth of split-threshold coverage is not a proxy for predictive
-fidelity, because accuracy depends on preserving the gain-weighted structure of
-the dominant splits, not on counting reproduced thresholds. The reference-chain
+fidelity, because downstream performance depends on preserving the
+gain-weighted structure of the dominant splits, not on counting reproduced
+thresholds. The reference-chain
 decomposition (\cref{eq:decomp}) operationalises this distinction: coverage
-failure is a structure failure, not a leaf failure, and each failure mode has a
-distinct remedy, making the decomposition a practical debugging tool.
+failure is a structure failure, not a leaf failure, and each failure mode points
+to a distinct debugging target, making the decomposition a practical debugging
+tool.
 
 The diagnostic reaches its limits at regression tasks, where structure mismatch
 dominates and small condensed sets cannot overcome it; at HPO transfer, where
