@@ -46,7 +46,7 @@ plt.rcParams.update({
     "grid.linewidth": 0.6,
     "legend.frameon": False,
     "savefig.bbox": "tight",
-    "savefig.pad_inches": 0.02,
+    "savefig.pad_inches": 0.06,
 })
 
 SRC = os.path.join("..", "..", "paper_materials", "tables")
@@ -105,6 +105,19 @@ def savefig(fig, name):
     print("wrote", out)
 
 
+def dataset_ci(cells, metric, method_col="method", dataset_col="dataset"):
+    """95% CI half-width over dataset-cluster means."""
+    g = cells.groupby([method_col, dataset_col], as_index=False)[metric].mean()
+    out = {}
+    for method, sub in g.groupby(method_col):
+        vals = sub[metric].dropna().values
+        if len(vals) > 1:
+            out[method] = 1.96 * np.std(vals, ddof=1) / np.sqrt(len(vals))
+        else:
+            out[method] = 0.0
+    return out
+
+
 # ----------------------------------------------------------------------
 # C1: method-level split-regret vs AUROC
 # ----------------------------------------------------------------------
@@ -121,7 +134,7 @@ def fig_c1():
                 "Distribution-matching", "Geometry / classical"]:
         sub = df[df["method"].map(FAMILY) == fam]
         ax.scatter(sub["split_regret_norm"], sub["auroc"],
-                   s=34, c=FAM_COLOR[fam], marker=FAM_MARKER[fam],
+                   s=44, c=FAM_COLOR[fam], marker=FAM_MARKER[fam],
                    edgecolor="white", linewidth=0.5, label=fam, zorder=3)
 
     # trend line
@@ -135,14 +148,13 @@ def fig_c1():
         ax.annotate(text, (row["split_regret_norm"], row["auroc"]),
                     xytext=(row["split_regret_norm"] + dx, row["auroc"] + dy),
                     fontsize=7, ha=ha, va="center",
+                    bbox=dict(fc="white", ec="none", alpha=0.75, pad=0.15),
                     arrowprops=dict(arrowstyle="-", lw=0.6, color="0.4"))
 
-    label("histdistill_greedy", "HistDistill-Greedy\n(coverage-optimal,\nhighest split-regret)",
-          -0.012, 0.028, ha="right")
-    label("gradient_sampling", "Gradient sampling\n(leaf-estimate failure)",
-          0.006, 0.045, ha="left")
-    label("histdistill_refined", "Refined family\n(most faithful)",
-          0.004, -0.075, ha="left")
+    label("histdistill_greedy", "HD-Greedy:\nhighest regret",
+          -0.018, 0.020, ha="right")
+    label("gradient_sampling", "Gradient sampling:\nleaf failure",
+          0.012, 0.045, ha="left")
 
     ax.set_xlabel(r"Split-regret  (no candidate retraining)")
     ax.set_ylabel("Downstream AUROC")
@@ -161,14 +173,15 @@ def fig_c1():
 # ----------------------------------------------------------------------
 def fig_c2():
     cells = pd.read_csv(os.path.join(SRC, "icdm_sld_law_cells.csv"))
-    cells = cells.dropna(subset=["sld_inf_norm", "auroc"])
+    sld_col = "sld_inf_raw" if "sld_inf_raw" in cells.columns else "sld_inf_norm"
+    cells = cells.dropna(subset=[sld_col, "auroc"])
 
     # choose six representative datasets spanning the SLD range, each with a
     # clear within-dataset trend (>= 8 cells, > 2 distinct SLD values)
     stats_by_ds = []
     for d, g in cells.groupby("dataset"):
-        if len(g) >= 8 and g["sld_inf_norm"].nunique() > 2:
-            stats_by_ds.append((d, np.median(g["sld_inf_norm"])))
+        if len(g) >= 8 and g[sld_col].nunique() > 2:
+            stats_by_ds.append((d, np.median(g[sld_col])))
     stats_by_ds.sort(key=lambda t: t[1])
     if len(stats_by_ds) >= 6:
         idx = np.linspace(0, len(stats_by_ds) - 1, 6).round().astype(int)
@@ -179,16 +192,16 @@ def fig_c2():
     fig, ax = plt.subplots(figsize=(3.45, 2.75))
 
     # faint scatter of every cell (full-data context)
-    ax.scatter(cells["sld_inf_norm"], cells["auroc"], s=5, c="0.82",
+    ax.scatter(cells[sld_col], cells["auroc"], s=5, c="0.82",
                linewidth=0, zorder=1, rasterized=True)
 
     line_colors = [CB["blue"], CB["green"], CB["purple"], CB["sky"],
                    CB["orange"], CB["yellow"]]
     for d, col in zip(sel, line_colors):
         g = cells[cells["dataset"] == d]
-        s, b, _, _, _ = stats.linregress(np.log10(g["sld_inf_norm"]), g["auroc"])
-        xs = np.array([g["sld_inf_norm"].min(), g["sld_inf_norm"].max()])
-        ax.scatter(g["sld_inf_norm"], g["auroc"], s=10, c=col, linewidth=0,
+        s, b, _, _, _ = stats.linregress(np.log10(g[sld_col]), g["auroc"])
+        xs = np.array([g[sld_col].min(), g[sld_col].max()])
+        ax.scatter(g[sld_col], g["auroc"], s=10, c=col, linewidth=0,
                    alpha=0.65, zorder=3)
         ax.plot(xs, b + s * np.log10(xs), color=col, lw=1.4, zorder=4)
 
@@ -197,23 +210,21 @@ def fig_c2():
             label="within-dataset trends")
 
     # pooled regression line (the misleading aggregate)
-    s, b, _, _, _ = stats.linregress(np.log10(cells["sld_inf_norm"]), cells["auroc"])
-    xs = np.logspace(np.log10(cells["sld_inf_norm"].min()),
-                     np.log10(cells["sld_inf_norm"].max()), 50)
+    s, b, _, _, _ = stats.linregress(np.log10(cells[sld_col]), cells["auroc"])
+    xs = np.logspace(np.log10(cells[sld_col].min()),
+                     np.log10(cells[sld_col].max()), 50)
     ax.plot(xs, b + s * np.log10(xs), color=CB["red"], lw=2.4, zorder=5,
             label="pooled trend (positive)")
 
-    ax.set_xlabel(r"$\mathrm{SLD}_\infty$  (lower = more faithful)")
+    ax.set_xlabel(r"Raw $\mathrm{SLD}_\infty$  (lower = more faithful)")
     ax.set_ylabel("Downstream AUROC")
     ax.set_xscale("log")
     ax.set_ylim(0.45, 0.95)
     ax.text(0.03, 0.04,
             "within dataset: " + r"$\rho \approx -0.56$" +
-            "\npooled: " + r"$\rho = +0.12$" + "  (Simpson's paradox)",
+            "\npooled: " + r"$\rho = +0.31$" + "  (Simpson's paradox)",
             transform=ax.transAxes, ha="left", va="bottom", fontsize=7.2,
             bbox=dict(boxstyle="round,pad=0.3", fc="white", ec="0.7", lw=0.6))
-    ax.legend(loc="upper center", handletextpad=0.5, ncol=1,
-              bbox_to_anchor=(0.5, 1.02))
     savefig(fig, "fig_c2_sldlaw.png")
 
 
@@ -239,10 +250,10 @@ def fig_c3():
     fig, ax = plt.subplots(figsize=(3.45, 2.75))
     for _, row in cov_mean.iterrows():
         is_greedy = row["method"] == "histdistill_greedy"
+        color = CB["red"] if is_greedy else CB["blue"]
         ax.scatter(row["coverage_ratio"], row["auroc"],
-                   s=70 if is_greedy else 46,
-                   c=CB["red"] if is_greedy else CB["blue"],
-                   marker="*" if is_greedy else "o",
+                   s=82 if is_greedy else 50,
+                   c=color, marker="*" if is_greedy else "o",
                    edgecolor="white", linewidth=0.5, zorder=3)
         txt = label_override.get(row["method"], row["method_label"])
         if txt is None:
@@ -253,7 +264,7 @@ def fig_c3():
                     xytext=(row["coverage_ratio"] + dx, row["auroc"]),
                     fontsize=7, ha=ha, va="center")
 
-    ax.set_xlabel("Split-coverage ratio  (higher = more thresholds)")
+    ax.set_xlabel("Split-coverage ratio")
     ax.set_ylabel("Downstream AUROC")
     ax.annotate("high coverage,\nlow AUROC",
                 xy=(cov_mean[cov_mean.method == "histdistill_greedy"]["coverage_ratio"].iloc[0],
@@ -303,7 +314,7 @@ def fig_c4():
 
     ax.axhline(0, color="0.6", lw=0.6, ls=":")
     ax.set_xlabel("Structure error")
-    ax.set_ylabel("Leaf-estimate gap  (higher = worse)")
+    ax.set_ylabel("Leaf-estimate gap")
     savefig(fig, "fig_c4_decomp.png")
 
 

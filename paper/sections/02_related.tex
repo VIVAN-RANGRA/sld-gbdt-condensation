@@ -65,9 +65,10 @@ including one produced by C\textsuperscript{2}TC, with respect to the GBDT
 split-gain landscape. Where C\textsuperscript{2}TC is model-agnostic in its
 clustering objective, SLD is GBDT-mechanism-specific: it reads the landscape
 from histogram statistics under a fixed prediction state without retraining on
-each candidate. We do not benchmark C\textsuperscript{2}TC as a baseline in the
-current grid because the experiment package was frozen around methods for which
-we had compatible, reproducible implementations. The artifact repository exposes
-the same condenser interface for adding C\textsuperscript{2}TC-generated sets;
-SLD can then serve as an evaluation layer or as a selection criterion among its
-class-allocation configurations.
+each candidate. We do not include C\textsuperscript{2}TC in the full grid
+because its official implementation was not integrated before our 17-method
+grid was frozen. As a compatibility audit, we ran the official
+C\textsuperscript{2}TC code on our Adult split at budget 200; the generated set
+obtained AUROC $0.769$ and raw $\mathrm{SLD}_\infty=1228.2$, confirming that
+SLD can audit C\textsuperscript{2}TC-generated surrogates; this single run does
+not constitute a full C\textsuperscript{2}TC baseline.

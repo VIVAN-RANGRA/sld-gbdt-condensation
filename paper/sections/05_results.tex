@@ -37,22 +37,22 @@ very large datasets, root split-regret loses rank resolution.
 \begin{table}[!t]
 \centering
 \caption{Headline performance and fidelity for five core methods (3,250 cells).
-AUROC mean$\pm$std; avg.\ rank lower is better. Speedup is relative to full-data
-retraining on the same dataset/learner; full-data AUROC is $0.812\pm0.175$.}
+AUROC uses mean$\pm$95\% CI over dataset clusters; avg.\ rank lower is better.
+Speedup is relative to full-data retraining on the same dataset/learner.}
 \label{tab:headline}
 \scriptsize
 \setlength{\tabcolsep}{3pt}
 \begin{tabular}{@{}lcccc@{}}
 \toprule
 \textbf{Method} & \textbf{AUROC} & \textbf{Rank} &
-  \textbf{SLD}$_\infty$ & \textbf{Speedup} \\
+  \textbf{Raw SLD}$_\infty$ & \textbf{Speedup} \\
 \midrule
-Full data & $0.812 \pm 0.175$ & -- & -- & 1.0$\times$ \\
-Legacy gain-path  & $0.743 \pm 0.186$ & 2.60 & 18.4  & 3.9$\times$ \\
-HistDistill-Refined  & $0.742 \pm 0.186$ & 2.68 & 16.7 & 3.5$\times$ \\
-HistDistill-Density  & $0.742 \pm 0.186$ & 2.65 & 17.0 & 3.5$\times$ \\
-Herding           & $0.731 \pm 0.176$ & 3.44 & 34.6  & 3.8$\times$ \\
-Random            & $0.724 \pm 0.184$ & 3.63 & 27.7  & 4.0$\times$ \\
+Full data & $0.812 \pm 0.062$ & -- & -- & 1.0$\times$ \\
+Legacy gain-path  & $0.743 \pm 0.057$ & 2.60 & 99.4  & 3.9$\times$ \\
+HistDistill-Refined  & $0.742 \pm 0.057$ & 2.68 & 93.6 & 3.5$\times$ \\
+HistDistill-Density  & $0.742 \pm 0.057$ & 2.65 & 93.7 & 3.5$\times$ \\
+Herding           & $0.731 \pm 0.054$ & 3.44 & 174.1  & 3.8$\times$ \\
+Random            & $0.724 \pm 0.056$ & 3.63 & 138.3  & 4.0$\times$ \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -60,8 +60,9 @@ Random            & $0.724 \pm 0.184$ & 3.63 & 27.7  & 4.0$\times$ \\
 % ---- Table 3: Universal 17-method audit ----
 \begin{table}[!t]
 \centering
-\caption{Seventeen-method diagnostic audit. Values are method means over
-156 dataset--budget--seed cells. Lower split-regret and higher AUROC are better.}
+\caption{Seventeen-method diagnostic audit. Values are method means
+$\pm$95\% CI over dataset clusters, over 156 dataset--budget--seed cells.
+Lower split-regret and higher AUROC are better.}
 \label{tab:allmethods}
 \tiny
 \setlength{\tabcolsep}{2.5pt}
@@ -69,34 +70,35 @@ Random            & $0.724 \pm 0.184$ & 3.63 & 27.7  & 4.0$\times$ \\
 \toprule
 \textbf{Method} & \textbf{AUROC} & \textbf{Regret} \\
 \midrule
-Gain-path sketch & 0.748 & 0.251 \\
-Legacy gain-path & 0.751 & 0.252 \\
-HD-Density & 0.751 & 0.253 \\
-HD-Refined & 0.750 & 0.255 \\
-Random & 0.726 & 0.265 \\
-Gain sketch & 0.749 & 0.268 \\
-Herding & 0.734 & 0.279 \\
-DM & 0.703 & 0.298 \\
-MVS & 0.697 & 0.301 \\
-K-center & 0.697 & 0.315 \\
-GOSS & 0.700 & 0.317 \\
-GradMatch & 0.715 & 0.324 \\
-Grad.\ samp. & 0.366 & 0.328 \\
-EL2N & 0.686 & 0.329 \\
-GraNd & 0.686 & 0.329 \\
-CRAIG & 0.699 & 0.335 \\
-HD-Greedy & 0.629 & 0.437 \\
+Gain-path sketch & $0.748\pm0.062$ & $0.251\pm0.079$ \\
+Legacy gain-path & $0.751\pm0.062$ & $0.252\pm0.079$ \\
+HD-Density & $0.751\pm0.061$ & $0.253\pm0.073$ \\
+HD-Refined & $0.750\pm0.062$ & $0.255\pm0.077$ \\
+Random & $0.726\pm0.060$ & $0.265\pm0.064$ \\
+Gain sketch & $0.749\pm0.062$ & $0.268\pm0.081$ \\
+Herding & $0.734\pm0.059$ & $0.279\pm0.082$ \\
+DM & $0.703\pm0.062$ & $0.298\pm0.075$ \\
+MVS & $0.697\pm0.058$ & $0.301\pm0.068$ \\
+K-center & $0.697\pm0.062$ & $0.315\pm0.079$ \\
+GOSS & $0.700\pm0.058$ & $0.317\pm0.073$ \\
+GradMatch & $0.715\pm0.057$ & $0.324\pm0.086$ \\
+Grad.\ samp. & $0.366\pm0.067$ & $0.328\pm0.078$ \\
+EL2N & $0.686\pm0.056$ & $0.329\pm0.071$ \\
+GraNd & $0.686\pm0.056$ & $0.329\pm0.071$ \\
+CRAIG & $0.699\pm0.061$ & $0.335\pm0.082$ \\
+HD-Greedy & $0.629\pm0.050$ & $0.437\pm0.106$ \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\textbf{Finding 2: Within a dataset, lower SLD predicts higher AUROC, but
+\textbf{Finding 2: Within a dataset, lower raw SLD predicts higher AUROC, but
 pooling across datasets is confounded.}
 \Cref{fig:sldlaw} shows the pattern directly. Within each dataset, lower
-$\mathrm{SLD}_\infty$ corresponds to better retrained AUROC; after pooling
-datasets, the trend can invert because dataset scale affects both SLD magnitude
-and absolute AUROC. SLD should therefore be used for within-dataset,
-within-budget method comparison, not as a cross-dataset absolute score.
+raw $\delta_\infty$ corresponds to better retrained AUROC; after pooling
+datasets, the trend can invert because dataset scale affects both raw SLD
+magnitude and absolute AUROC. Raw SLD should therefore be used for
+within-dataset, within-budget method comparison, not as a cross-dataset
+absolute score.
 
 % ---- Figure 3: SLD law scatter ----
 \begin{figure}[!t]
@@ -104,9 +106,9 @@ within-budget method comparison, not as a cross-dataset absolute score.
 \includegraphics[width=\columnwidth]{figures/fig_c2_sldlaw.png}
 \caption{%
   \textbf{Within-dataset SLD trend.}
-  Coloured lines are within-dataset fits on log-scale SLD; the average
+  Coloured lines are within-dataset fits on log-scale raw SLD; the average
   within-dataset trend is negative. The pooled fit reverses because dataset
-  scale confounds absolute SLD and AUROC.%
+  scale confounds raw SLD and AUROC.%
 }
 \label{fig:sldlaw}
 \end{figure}
@@ -202,7 +204,7 @@ GradMatch     & 0.734 & 0.732 & 0.059 & $-0.002$ & 0.113 \\
 HD-Refined    & 0.773 & 0.747 & 0.044 & $-0.026$ & 0.060 \\
 Legacy gp     & 0.774 & 0.748 & 0.043 & $-0.026$ & 0.068 \\
 \bottomrule
-\multicolumn{6}{@{}l@{}}{\scriptsize Full-data AUROC $=0.826$; reference AUROC $=0.791$.}
+\multicolumn{6}{@{}l@{}}{\scriptsize Decomposition-subset anchors: full AUROC $=0.826$, reference $=0.791$.}
 \end{tabular}
 \end{table}
 
@@ -232,8 +234,9 @@ is disproportionately costly.
 % ---- Dose response table ----
 \begin{table}[!t]
 \centering
-\caption{Dose-response: 26 binary datasets, 1,872 cells. Eight injected-noise
-levels are grouped into five displayed rows.}
+\caption{Dose-response: 26 binary datasets, 1,872 cells. Values are
+mean$\pm$95\% CI over dataset clusters; eight injected-noise levels are grouped
+into five displayed rows.}
 \label{tab:dose}
 \scriptsize
 \setlength{\tabcolsep}{3pt}
@@ -242,11 +245,11 @@ levels are grouped into five displayed rows.}
 \textbf{Dose} & \textbf{AUROC} & \textbf{$\Delta$AUC} &
   \textbf{Agree.} & \textbf{Regret} \\
 \midrule
-$\leq$0.50 & 0.815 & 0.000 & 1.000 & 0.000 \\
-0.75 & 0.813 & $-0.002$ & 0.933 & 0.011 \\
-1.00 & 0.811 & $-0.004$ & 0.836 & 0.030 \\
-1.50 & 0.811 & $-0.004$ & 0.687 & 0.069 \\
-2.00 & 0.808 & $-0.008$ & 0.590 & 0.101 \\
+$\leq$0.50 & $0.815\pm0.068$ & 0.000 & $1.000\pm0.000$ & 0.000 \\
+0.75 & $0.813\pm0.069$ & $-0.002$ & $0.933\pm0.002$ & 0.011 \\
+1.00 & $0.811\pm0.069$ & $-0.004$ & $0.836\pm0.004$ & 0.030 \\
+1.50 & $0.811\pm0.069$ & $-0.004$ & $0.687\pm0.008$ & 0.069 \\
+2.00 & $0.808\pm0.070$ & $-0.008$ & $0.590\pm0.011$ & 0.101 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -280,6 +283,10 @@ advantage over HD-Density is $0.034$ AUROC and over HD-Refined is $0.035$
 AUROC, with two-sided Wilcoxon $p=0.25$ in both comparisons. The practical
 reading is convergence among reasonable condensers, not a new winner-take-all
 method ranking.
+This is the regime thesis in one comparison: HD-Refined beats Random in
+24/26 small-to-mid-size datasets in the clustered audit (\Cref{tab:pairwise}),
+yet Random has the largest point estimate on all three very large datasets
+(\Cref{tab:large-auroc}).
 
 The HIGGS case is informative rather than contradictory. Several methods have
 zero root split-regret there, yet their AUROCs differ. This is exactly the
@@ -298,7 +305,8 @@ real cost win comes from training on hundreds of rows rather than millions.
 \caption{%
   \textbf{Large-scale retraining payoff.}
   Log-log speedup for 400-row condensed retraining on Covertype, SUSY, and
-  HIGGS. Lines connect median speedup at each observed training size.%
+  HIGGS. Points are single runs at observed dataset sizes, so no run-to-run CI
+  is claimed for this scale audit.%
 }
 \label{fig:large-scale}
 \end{figure}
@@ -307,7 +315,7 @@ real cost win comes from training on hundreds of rows rather than millions.
 \centering
 \caption{Large-scale audit at the largest training size per dataset. $\rho$ is
 Spearman correlation over the five audited methods; negative $\rho$ means lower
-split-regret aligns with higher AUROC.}
+split-regret aligns with higher AUROC. Each row is a single large-scale run.}
 \label{tab:large-scale}
 \scriptsize
 \setlength{\tabcolsep}{3pt}
@@ -327,7 +335,8 @@ HIGGS & 10.50M & $0.11$ & $5{,}734\times$ \\
 \caption{Large-scale AUROC at the largest training size. Full-data AUROCs are
 0.897, 0.873, and 0.803 for Covertype, SUSY, and HIGGS. Random wins the
 condensed point estimates, but the three-dataset paired audit is underpowered
-($p=0.25$ against HD-Refined and HD-Density).}
+($p=0.25$ against HD-Refined and HD-Density); no per-row CI is claimed because
+the large-scale audit uses one full run per dataset/method.}
 \label{tab:large-auroc}
 \scriptsize
 \setlength{\tabcolsep}{3pt}

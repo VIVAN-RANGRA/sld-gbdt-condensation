@@ -57,6 +57,11 @@
 % Cross-references (MUST be last)
 \usepackage[capitalize,noabbrev]{cleveref}
 \usepackage{enumitem}
+\setlength{\textfloatsep}{7pt plus 1pt minus 2pt}
+\setlength{\floatsep}{6pt plus 1pt minus 2pt}
+\setlength{\intextsep}{6pt plus 1pt minus 2pt}
+\setlength{\dbltextfloatsep}{7pt plus 1pt minus 2pt}
+\setlength{\dblfloatsep}{6pt plus 1pt minus 2pt}
 
 % ============================================================
 %  TITLE / AUTHORS
@@ -229,6 +234,52 @@ Distrib.
 \end{tabular}
 \end{table}
 
+% ---- Dataset inventory ----
+\begin{table*}[!t]
+\centering
+\caption{Expanded 26-dataset binary benchmark inventory. OpenML entries give dataset
+ID/task ID when a task was used; PMLB entries use exact PMLB identifiers.
+$*$: focused binary suite.}
+\label{tab:datasets}
+\tiny
+\setlength{\tabcolsep}{1.7pt}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}llrrllrr@{}}
+\toprule
+\textbf{Dataset} & \textbf{ID} & \textbf{N} & \textbf{F} &
+\textbf{Dataset} & \textbf{ID} & \textbf{N} & \textbf{F} \\
+\midrule
+adult$^*$ & PMLB:adult & 20k & 14 &
+gametes\_epi\_1000 & PMLB:GAMETES\_Epistasis\_2\_Way\_1000atts\_0.4H\_EDM\_1\_EDM\_1\_1 & 1{,}600 & 1000 \\
+agaricus\_lepiota & PMLB:agaricus\_lepiota & 8{,}145 & 22 &
+gametes\_epi\_20\_0.1H & PMLB:GAMETES\_Epistasis\_2\_Way\_20atts\_0.1H\_EDM\_1\_1 & 1{,}600 & 20 \\
+australian$^*$ & OpenML d40981 & 690 & 14 &
+gametes\_epi\_20\_0.4H & PMLB:GAMETES\_Epistasis\_2\_Way\_20atts\_0.4H\_EDM\_1\_1 & 1{,}600 & 20 \\
+bank\_marketing$^*$ & OpenML d1461 & 20k & 16 &
+gametes\_epi\_3way & PMLB:GAMETES\_Epistasis\_3\_Way\_20atts\_0.2H\_EDM\_1\_1 & 1{,}600 & 20 \\
+breast\_w$^*$ & OpenML d15/t15 & 699 & 9 &
+gametes\_het\_50 & PMLB:GAMETES\_Heterogeneity\_20atts\_1600\_Het\_0.4\_0.2\_50\_EDM\_2\_001 & 1{,}600 & 20 \\
+credit\_approval & OpenML d29/t29 & 690 & 15 &
+gametes\_het\_75 & PMLB:GAMETES\_Heterogeneity\_20atts\_1600\_Het\_0.4\_0.2\_75\_EDM\_2\_001 & 1{,}600 & 20 \\
+credit\_g$^*$ & OpenML d31/t31 & 1k & 20 &
+hill\_valley\_with\_noise & PMLB:Hill\_Valley\_with\_noise & 1{,}212 & 100 \\
+diabetes$^*$ & OpenML d37/t37 & 768 & 8 &
+hill\_valley\_without\_noise & PMLB:Hill\_Valley\_without\_noise & 1{,}212 & 100 \\
+electricity & OpenML d151/t219 & 20k & 8 &
+kr\_vs\_kp & OpenML d3/t3 & 3{,}196 & 36 \\
+pc1$^*$ & OpenML d1068 & 1{,}109 & 21 &
+pc3 & OpenML d1050/t3903 & 1{,}563 & 37 \\
+pc4 & OpenML d1049/t3902 & 1{,}458 & 37 &
+phoneme & OpenML d1489 & 5{,}404 & 5 \\
+qsar\_biodeg & OpenML d1494 & 1{,}055 & 41 &
+sick & OpenML d38/t3021 & 3{,}772 & 29 \\
+spambase$^*$ & OpenML d44/t43 & 4{,}601 & 57 &
+tic\_tac\_toe & OpenML d50/t49 & 958 & 9 \\
+\bottomrule
+\end{tabular}
+}
+\end{table*}
+
 % ============================================================
 %  SECTION 5: RESULTS
 % ============================================================
@@ -247,39 +298,14 @@ Distrib.
 
 \input{sections/07_conclusion}
 
-% Dataset inventory table (Appendix A) placed before bibliography so it
-% floats into available space on the last body page.
-\begin{table}[t]
-\centering
-\caption{Dataset inventory (binary; public via OpenML/PMLB).
-$*$: focused binary suite.}
-\label{tab:datasets}
-\tiny
-\setlength{\tabcolsep}{1.5pt}
-\begin{tabular}{@{}lrr|lrr@{}}
-\toprule
-\textbf{Dataset} & \textbf{N} & \textbf{F} &
-\textbf{Dataset} & \textbf{N} & \textbf{F} \\
-\midrule
-adult$^*$      & 20k & 14 & spambase$^*$  & 4{,}601 & 57 \\
-australian$^*$ &  690 & 14 & agaricus      & 8{,}145 & 22 \\
-bank\_mktg$^*$ & 20k & 16 & credit\_appr. &   690 & 15 \\
-breast\_w$^*$  &  699 &  9 & electricity   & 20k &  8 \\
-credit\_g$^*$  & 1k  & 20 & gametes (6)   & 1{,}600 & 20 \\
-diabetes$^*$   &  768 &  8 & hill\_val.(2) & 1{,}212 & 100 \\
-pc1$^*$        & 1{,}109 & 21 & kr\_vs\_kp & 3{,}196 & 36 \\
-phoneme        & 5{,}404 &  5 & pc3, pc4   & $\sim$1{,}500 & 37 \\
-qsar\_biodeg   & 1{,}055 & 41 & sick        & 3{,}772 & 29 \\
-smoke          & 1{,}500 & 12 & tic\_tac    &   958 &  9 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
 % ============================================================
 %  BIBLIOGRAPHY
 % ============================================================
 
+\begingroup
+\footnotesize
 \bibliographystyle{IEEEtran}
 \bibliography{references}
+\endgroup
 
 \end{document}

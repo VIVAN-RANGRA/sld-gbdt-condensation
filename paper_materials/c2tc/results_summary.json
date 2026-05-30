@@ -1,0 +1,13 @@
+{
+    "initial_solution": {
+        "0": 47,
+        "1": 153
+    },
+    "best_solution": [
+        79,
+        121
+    ],
+    "best_cost": 47658978304.0,
+    "cctc_time": 2.7280828952789307,
+    "avg_generation_time_sec": 0.06666159629821777
+}

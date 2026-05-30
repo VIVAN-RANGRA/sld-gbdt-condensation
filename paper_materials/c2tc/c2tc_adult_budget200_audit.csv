@@ -1,0 +1,2 @@
+dataset,budget,seed,method,auroc,raw_sld_inf,relative_sld_inf,root_agreement,train_seconds
+adult,200,0,C2TC official code compatibility audit,0.7690753474269234,1228.2093689147289,4.720788661590096,0.0,0.03764170000067679

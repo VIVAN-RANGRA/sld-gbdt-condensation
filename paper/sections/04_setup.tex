@@ -63,13 +63,13 @@ multiclass tasks by one-vs-rest macro-AUROC, and regression tasks by $R^2$.
 Every score is computed on a held-out test set with the model retrained on the
 condensed set.
 
-\textbf{Fidelity.} $\mathrm{SLD}_\infty$ is the relative $\ell_\infty$
-landscape distance of \eqref{eq:sld}, and split-regret is the normalised gain
-lost when a node follows the surrogate's argmax split rather than the full-data
-one. Raw SLD is retained in the released tables, but relative SLD and
-split-regret are the primary metrics because raw landscape scale is
-dataset-dependent. Both are read off the histogram statistics before retraining
-on any candidate surrogate.
+\textbf{Fidelity.} \eqref{eq:sld} defines the relative $\ell_\infty$ landscape
+distance, while split-regret is the normalised gain lost when a node follows the
+surrogate's argmax split rather than the full-data one. The reported SLD columns
+and \Cref{fig:sldlaw} use raw $\ell_\infty$ landscape error to expose the scale
+confounding in Finding~2; these raw values are not cross-dataset scores.
+Split-regret is the primary normalised ranking metric. Both are read off the
+histogram statistics before retraining on any candidate surrogate.
 
 \textbf{Error decomposition.} To separate the two ways a condensed set can hurt
 a tree, we evaluate three models in a reference chain. The \emph{structure
@@ -107,7 +107,7 @@ All datasets are public, and all preprocessing is deterministic: categorical
 features are ordinal/one-hot encoded as specified in the scripts, numerical
 features are binned with shared full-data bin edges, and train/validation/test
 splits use stratified seeds where labels permit. The artifact repository,
-\url{https://github.com/vivan22581/sld-gbdt-condensation}, contains the
+\url{https://github.com/VIVAN-RANGRA/sld-gbdt-condensation}, contains the
 exact configs, seeds, package versions (Python 3.11.9, NumPy 2.4.4, pandas
 2.2.3, scikit-learn 1.8.0, XGBoost 3.2.0, LightGBM 4.6.0, SciPy 1.17.1),
 processed metric CSVs, plotting scripts, and commands such as

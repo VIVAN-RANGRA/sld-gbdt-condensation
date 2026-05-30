@@ -59,13 +59,15 @@ structural gap between $D$ and $D'$ via their landscape distance.
 
 \begin{definition}[Split-Landscape Discrepancy]
 \label{def:sld}
-The relative Split-Landscape Discrepancy of order $p$ between dataset $D$ and
-surrogate $D'$ is
+Let the raw landscape error be
+$\delta_p(D,D')=\lVert\Gamma_D-\Gamma_{D'}\rVert_p$. The relative
+Split-Landscape Discrepancy of order $p$ between dataset $D$ and surrogate $D'$
+is
 %
 \begin{equation}
   \label{eq:sld}
   \mathrm{SLD}_p(D, D') \;=\;
-  \frac{\bigl\lVert \Gamma_D - \Gamma_{D'} \bigr\rVert_p}
+  \frac{\delta_p(D,D')}
        {\max(\lVert \Gamma_D\rVert_p,\epsilon)},
 \end{equation}
 %
@@ -95,14 +97,13 @@ split at node $v$ on $D$. If
 %
 \begin{equation}
   \label{eq:prop1}
-  \mathrm{SLD}_\infty(D, D') < \Delta_v / 2,
+  \delta_\infty(D, D') < \Delta_v / 2,
 \end{equation}
 %
 then the argmax split selected by $D'$ coincides with the argmax selected by $D$
 at node $v$, assuming a unique argmax and deterministic tie-breaking. In the
-measured margin-qualifying cells reported in \Cref{sec:results-ordering},
-root-level split agreement equals $1.0$. The dose-response experiment
-(\cref{sec:results-dose}) provides the empirical validation.
+dose-response cells satisfying this raw-error margin condition, root-level split
+agreement equals $1.0$ (\cref{sec:results-dose}).
 
 \paragraph{Coverage guarantee.}
 The split-coverage objective is the unweighted fraction of full-data high-gain
