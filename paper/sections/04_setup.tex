@@ -35,9 +35,9 @@ DistributionMatching, and HD abbreviates HistDistill.
 Our experiments use public tabular datasets drawn from
 OpenML~\cite{vanschoren2013openml} and the Penn Machine Learning Benchmarks
 (PMLB)~\cite{olson2017pmlb}; several entries originate from UCI-style benchmark
-datasets. The full inventory appears in \Cref{tab:datasets}. The artifact
-repository lists the exact OpenML/PMLB identifiers and processed split
-checksums. The core study is on binary classification. For each dataset we
+datasets. The full inventory appears in \Cref{tab:datasets}. The repository
+lists the exact OpenML/PMLB identifiers and processed split checksums. The core
+study is on binary classification. For each dataset we
 condense the training set to five budgets, $\{10, 25, 50, 100, 200\}$ rows, and
 repeat every (dataset, method, budget) configuration over five random seeds.
 Across the 26 binary datasets and the five core methods this gives $3{,}250$
@@ -85,24 +85,14 @@ set fills the model's leaves, defined as the $\ell_1$ distance between the
 condensed- and full-data distributions of training instances across the leaves;
 we call this the leaf-population mismatch.
 
-\subsection{Learner and Hardware}
+\subsection{Learners and Reproducibility}
 
-The reference landscape uses XGBoost hist trees: 80 rounds, depth 3, learning
-rate 0.08, $\lambda=1$, $\gamma=0$, subsample/column subsample 0.9,
-binary-logistic objective, and fixed seeds. Downstream GBDT-mechanism results
-use the same setting; robustness slots add LightGBM, CatBoost/fallback
-histogram boosting, random forests, and multilayer perceptrons (MLPs). LightGBM
-uses 120 trees, depth 4, learning rate 0.06, 15 leaves, subsample/column
-subsample 0.9, and default \texttt{min\_child\_samples}=20; the artifact
-includes the budget-aware sweep over $\{1,2,5,10,20\}$.
-
-\subsection{Reproducibility}
-
-All datasets are public and preprocessing is deterministic: categorical
-features follow the scripts, numerical features use shared full-data bin edges,
-and splits use stratified seeds where labels permit. The artifact repository,
-\url{https://github.com/VIVAN-RANGRA/sld-gbdt-condensation} (tag
-\texttt{icdm-repro-v4}), contains exact configs, seeds, package versions,
-processed metric CSVs, plotting scripts, and runbook commands, including
-\texttt{scripts/19\_run\_icdm\_core.py} with
-\texttt{configs/dataset26\_binary.yaml} and seeds 0--4.
+The reference landscape and primary downstream learner use histogram XGBoost.
+Robustness checks additionally use LightGBM, CatBoost/fallback histogram
+boosting, random forests, and multilayer perceptrons (MLPs). All datasets are
+public and preprocessing is deterministic: categorical features follow the
+repository scripts, numerical features use shared full-data bin edges, and
+splits use stratified seeds where labels permit. The repository,
+\url{https://github.com/VIVAN-RANGRA/sld-gbdt-condensation}, contains the exact
+hyperparameters, seeds, package versions, processed metric CSVs, plotting code,
+and commands needed to reproduce the reported tables.
