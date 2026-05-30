@@ -3,21 +3,16 @@
 \section{Results}
 \label{sec:results}
 
-\subsection{Does the Landscape Predict Performance?}
+\subsection{Does a Training-Free Score Predict Downstream Performance?}
 \label{sec:results-ordering}
 
-Method-level split-regret ranks method families in the small-to-mid-size
-benchmark (\Cref{fig:universal,tab:allmethods}). The score is computed before
-candidate retraining and is strongly monotone with eventual AUROC at the
-method-mean level: gain-path methods sit in the low-regret/high-AUROC corner,
-while the coverage-optimal HD-Greedy method sits at the opposite extreme.
-Gradient sampling is the main exception, and the decomposition below shows why:
-its problem is leaf-value estimation, not split-structure preservation. This
-17-method diagnostic grid uses 26 datasets, two audited budgets, and three
-seeds, and is separate from the five-budget, five-seed core grid in
-\Cref{tab:headline}. The large-scale audit in \cref{sec:results-scale} bounds
-the claim: once high-gain margins are cleared on very large datasets, root
-split-regret loses rank resolution.
+A single split-regret score, computed without retraining any candidate, orders
+condensation methods by their eventual downstream AUROC. The reason is
+mechanistic. Split-regret measures how much gain the booster forfeits when it
+follows the surrogate's preferred splits instead of the full-data splits, so a
+method that misplaces high-gain thresholds is penalised in direct proportion to
+the structure it destroys. This produces a method-level ordering in the
+small-to-mid-size diagnostic grid (\Cref{fig:universal,tab:allmethods}).
 
 % ---- Figure 2: Universal SLD map (headline) ----
 \begin{figure}[!t]
@@ -57,9 +52,10 @@ Random            & $0.724 \pm 0.056$ & 3.63 & 138.3  & 4.0$\times$ \\
 \end{tabular}
 \end{table}
 
-The gradient-sampling AUROC is an audited failure mode rather than a plotting
-artifact: its deployed AUROC is also low in the reference-chain subset
-(\Cref{tab:decomp}), where the error is leaf-estimate dominated. The
+One method breaks the trend in an informative way. Gradient sampling earns low
+split-regret yet collapses to 0.366 AUROC, because its failure is in leaf-value
+estimation rather than split structure (\Cref{tab:decomp}), so we treat it as a
+diagnosed failure mode rather than noise. The
 method-level association is not driven only by this point or by HD-Greedy:
 excluding both leaves Spearman $\rho=-0.85$ over the remaining 15 methods.
 
@@ -98,16 +94,15 @@ HD-Greedy & $0.629\pm0.050$ & $0.437\pm0.106$ \\
 \end{tabular}
 \end{table}
 
-Negative leaf gaps mean deployed condensed leaves slightly outperform the
-full-data leaf refit under this diagnostic chain, usually through regularisation
-or favourable condensed weighting.
-
-Lower raw SLD predicts higher AUROC within a dataset, but pooling across
-datasets is confounded (\Cref{fig:sldlaw}). Within each dataset, lower raw
-$\delta_\infty$ corresponds to better retrained AUROC; after pooling datasets,
-the trend can invert because dataset scale affects both raw SLD magnitude and
-absolute AUROC. Raw SLD should therefore be used for within-dataset,
-within-budget method comparison, not as a cross-dataset absolute score.
+Within a single dataset, a more faithful landscape reliably predicts a more
+accurate retrained model; the relationship inverts only when datasets of
+different scale are pooled. Holding a dataset fixed and sweeping the budget,
+lower raw landscape error tracks higher AUROC. Pooling across datasets flips
+the sign, because larger datasets inflate both the absolute landscape error and
+the achievable AUROC at once, a textbook Simpson's paradox (\Cref{fig:sldlaw}).
+The practical consequence is a usage rule rather than a defect: raw SLD is a
+within-dataset, within-budget comparison signal, and the normalised
+split-regret, not raw SLD, is the quantity to compare across datasets.
 
 % ---- Figure 3: SLD law scatter ----
 \begin{figure}[!t]
@@ -122,16 +117,21 @@ within-budget method comparison, not as a cross-dataset absolute score.
 \label{fig:sldlaw}
 \end{figure}
 
-\subsection{Coverage Is Not Predictive Fidelity}
+\subsection{Why Does Coverage-Optimal Selection Fail?}
 \label{sec:results-coverage}
 
-The near-optimal coverage selector is weak by downstream predictive
-performance (\Cref{fig:coverage,tab:coverage}). HD-Greedy optimises
-split-threshold coverage and achieves the expected coverage win, but this
-objective is not the one that preserves downstream AUROC. The method lands in
-the bottom tier of the 17-method audit (\Cref{tab:allmethods}); unweighted
-threshold coverage and gain-weighted landscape fidelity are different
-objectives.
+A selector that provably maximises split-threshold coverage is among the worst
+condensers for downstream accuracy. HD-Greedy is built to cover as many
+full-data high-gain thresholds as possible, and it attains the standard
+$(1-1/e)$ guarantee for greedy submodular coverage: it reproduces 37\% of
+high-gain thresholds at budget 25 and 54\% at budget 50, against at most 16\%
+for every other method. Broad coverage, however, optimises the wrong objective.
+Downstream AUROC is driven by the few gain-weighted splits that dominate the
+prediction, and spreading a tiny budget across many thresholds dilutes exactly
+those splits. This is why HD-Greedy falls to the bottom of the ranking while the
+accurate methods occupy a separate region of the coverage--accuracy plane
+(\Cref{fig:coverage,tab:coverage}): unweighted threshold coverage and
+gain-weighted structural fidelity are different objectives.
 
 % ---- Figure 4: Selector coverage ----
 \begin{figure}[!t]
@@ -168,14 +168,21 @@ Herding & 0.059 & 0.183 & 0.118 & 0.229 & 0.734 \\
 \end{tabular}
 \end{table}
 
-The decomposition shows that the coverage failure is structural, whereas
-gradient sampling fails for a different reason (\Cref{fig:decomp,tab:decomp}).
-The reference chain separates structure error from leaf-estimate gap.
-HD-Greedy's loss comes from choosing the wrong gain-weighted structure, not from
-poor leaf values after its structure is fixed. Gradient sampling is the
-opposite diagnostic case: its population mismatch is low, but its leaf-estimate
-gap is high, pointing to distorted within-leaf gradient/Hessian or reweighting
-statistics.
+A reference-chain decomposition shows that the two weakest methods fail for
+opposite reasons, which is what makes fidelity, not coverage, the right
+selection target. We split each method's error into a structure component, the
+accuracy lost because the condensed set induces the wrong tree structure, and a
+leaf-estimate component, the accuracy lost to mis-estimated leaf values once the
+structure is held correct. HD-Greedy's loss is almost entirely structural:
+its structure error is 9.4\%, the highest of any method, while its leaf values
+are healthy (leaf gap 5.4\%). Gradient sampling is the mirror image, with a
+moderate structure error (6.8\%) but by far the largest leaf-estimate gap
+(37\%), consistent with distorted within-leaf statistics rather than poor
+population coverage (\Cref{fig:decomp,tab:decomp}). A few methods even post
+slightly negative leaf gaps, meaning their deployed leaves narrowly beat the
+full-data refit, usually through regularisation or favourable condensed
+weighting. The selection rule that follows is unambiguous: drive down landscape
+discrepancy, not coverage.
 
 % ---- Figure 5: Error decomposition ----
 \begin{figure}[!t]
@@ -217,15 +224,22 @@ Legacy gp     & 0.774 & 0.748 & 0.043 & $-0.026$ & 0.068 \\
 \end{tabular}
 \end{table}
 
-\subsection{How Much Can Structure Be Perturbed?}
+\subsection{How Robust Is Learned Structure to Landscape Perturbation?}
 \label{sec:results-dose}
 
-Calibrated split-gain noise exposes a margin-linked robustness pattern for GBDT
-structure (\Cref{fig:dose,tab:dose}). AUROC and split agreement stay flat while
-the margin condition in \eqref{eq:prop1} holds; beyond that point, agreement
-drops first and AUROC degrades mildly. The result explains why aggressive
-condensation can work when the dominant split margins are preserved, and why
-corrupting high-gain structure is disproportionately costly.
+GBDT structure tolerates landscape perturbation up to a margin-linked
+threshold, after which it degrades gracefully rather than collapsing. The
+mechanism is the gain-margin condition \eqref{eq:prop1}: a split flips only
+once the injected noise exceeds the gap to its runner-up, and the highest-gain
+splits, which matter most for accuracy, carry the widest margins and so flip
+last. Injecting calibrated split-gain noise into the full-data landscape makes
+the pattern concrete. While the margin condition holds, split agreement and
+AUROC stay pinned at baseline; past that point agreement falls first and AUROC
+follows only mildly (\Cref{fig:dose,tab:dose}). This asymmetry explains both
+halves of the condensation story at once: aggressive compression is safe as
+long as the surrogate preserves the dominant split margins, and any condenser
+that corrupts those high-gain splits, as HD-Greedy does, pays a
+disproportionate accuracy penalty.
 
 % ---- Figure 6: Dose response ----
 \begin{figure}[!t]
@@ -262,41 +276,45 @@ $\leq$0.50 & $0.815\pm0.068$ & 0.000 & $1.000\pm0.000$ & 0.000 \\
 \end{tabular}
 \end{table}
 
-\subsection{Performance, Fidelity, and Cost}
+\subsection{What Does the Most Faithful Method Buy?}
 \label{sec:results-practical}
 
-The top of the core grid is practically tied
-(\Cref{tab:headline,tab:pairwise}). HistDistill-Refined and
-HistDistill-Density match the legacy gain-path selector in AUROC while
-achieving the lowest landscape discrepancy among the core methods. The
-Refined-vs.-Legacy mean difference is operationally negligible and its
-dataset-clustered confidence interval crosses zero. At the studied small-data
-budgets, condensed retraining gives a median $3$--$4\times$ speedup, with
-median condensed training under half a second in the recorded runs; SLD itself
-costs one histogram pass.
+The most faithful methods match the strongest prior selector at a fraction of
+the training cost, but they do not beat it. On the controlled core grid,
+HistDistill-Refined and HistDistill-Density reach the legacy gain-path
+selector's accuracy while attaining the lowest landscape discrepancy among the
+core methods (\Cref{tab:headline}). The match is statistical, not rhetorical: a
+dataset-clustered paired test places the Refined-versus-Legacy difference
+within noise of zero, while clearly separating Refined from the weaker Herding
+and Random baselines (\Cref{tab:pairwise}). The payoff is therefore not higher
+accuracy but lower cost. Condensed retraining runs several times faster than
+full-data retraining at these budgets, and the diagnostic itself adds only one
+histogram pass. We accordingly present the refined family as parity at the top
+with better fidelity, not as a new state of the art.
 
 \subsection{Does the Diagnostic Hold at Scale?}
 \label{sec:results-scale}
 
-\textbf{Scale audit: the cost payoff grows with $N$, while ordering is
-dataset-dependent.}
-A real large-data audit with 400-row condensed sets shows the payoff and the
-limit of the diagnostic at deployment scale
-(\Cref{fig:large-scale,tab:large-scale,tab:large-auroc}). Speedup rises from
-single digits at $20$k rows to hundreds or thousands at million-row scale.
-Random has the best large-$N$ AUROC point estimate on all three datasets, but
-the three-dataset paired audit is underpowered (two-sided Wilcoxon $p=0.25$
-vs.\ HD-Refined and HD-Density), so the practical reading is convergence among
-reasonable condensers. This is the regime thesis: HD-Refined beats Random in
-24/26 small-to-mid-size datasets (\Cref{tab:pairwise}), yet Random has the
-largest point estimate on all three very large datasets
-(\Cref{tab:large-auroc}).
+Condensation's cost advantage grows sharply with dataset size, but at very
+large $N$ the rankings among reasonable condensers converge and the cheap
+root-level score loses resolution. A large-scale experiment with fixed 400-row
+condensed sets shows the retraining speedup growing from modest factors at tens
+of thousands of rows to several orders of magnitude at the million-row scale
+(\Cref{fig:large-scale,tab:large-scale}). Predictive ordering tells a subtler
+story. Random holds the best condensed-set point estimate on all three giant
+datasets, but the three-dataset paired comparison is underpowered, so the honest
+reading is convergence among reasonable condensers rather than a genuine Random
+win (\Cref{tab:large-auroc}). This is the regime boundary: the refined family
+that dominates Random across the small-to-mid-size datasets no longer separates
+from it once $N$ is enormous.
 
-HIGGS illustrates the same margin mechanism as \Cref{fig:sldlaw,fig:dose}:
-several methods have zero root split-regret because the dominant root split is
-saturated, so leaf estimates or deeper structure determine AUROC. Root-level
-regret still rejects severe failures, but it cannot finely rank reasonable
-surrogates once the top split margin is cleared.
+The mechanism is the same gain margin behind \Cref{fig:sldlaw,fig:dose}. On the
+largest dataset, several methods register zero root split-regret because the
+dominant root split is saturated, so leaf estimates and deeper structure, not
+the root choice, decide AUROC. Root-level regret still rejects severe failures,
+but it can no longer finely rank reasonable surrogates once the top margin is
+cleared. The diagnostic therefore degrades gracefully from a ranker into a
+filter as $N$ grows.
 
 \begin{figure}[!t]
 \centering

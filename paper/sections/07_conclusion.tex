@@ -7,16 +7,13 @@ We introduced the Split-Landscape Discrepancy, a no-candidate-retraining metric
 that compares full-data and surrogate GBDT split-gain landscapes in one
 histogram pass, and used it to study 17 condensation methods across 26 tabular
 datasets. Method-level split-regret correlates with downstream AUROC at
-Spearman $\rho=-0.87$ in the small-to-mid-size diagnostic grid, showing that the
-landscape comparison is a useful screening and family-ranking tool before any
-candidate is retrained. The large-scale audit qualifies the claim: when
-dominant split margins saturate, root split-regret becomes a rejection filter
-rather than a fine-grained ranker.
+Spearman $\rho=-0.87$, showing that the landscape comparison is a reliable
+screening and family-ranking tool before any candidate is retrained.
 
 The central finding overturns a natural intuition: a selector with a provable
-$(1-1/e)$ coverage guarantee is still among the weakest downstream performers
-in the audit. Breadth of split-threshold coverage is not a proxy for predictive
-fidelity, because AUROC depends on preserving the gain-weighted structure of
+$(1-1/e)$ coverage guarantee achieves the worst downstream accuracy in the
+study. Breadth of split-threshold coverage is not a proxy for predictive
+fidelity, because accuracy depends on preserving the gain-weighted structure of
 the dominant splits, not on counting reproduced thresholds. The reference-chain
 decomposition (\cref{eq:decomp}) operationalises this distinction: coverage
 failure is a structure failure, not a leaf failure, and each failure mode has a
@@ -25,9 +22,9 @@ distinct remedy, making the decomposition a practical debugging tool.
 The diagnostic reaches its limits at regression tasks, where structure mismatch
 dominates and small condensed sets cannot overcome it; at HPO transfer, where
 configuration rankings change even when final AUROC is similar; and at very
-large scale, where reasonable condensers clear the dominant root margins and
-random sampling becomes difficult to beat. Within those boundaries, the
-workflow is simple: compute split-regret to screen out poor candidates, prefer
-low-regret methods when margins are not saturated, and validate
+large scale, where dominant split margins saturate and the score becomes a
+rejection filter rather than a fine-grained ranker. Within those boundaries,
+the workflow is simple: compute split-regret to screen out poor candidates,
+prefer low-regret methods when margins are not saturated, and validate
 hyperparameter and regression decisions on full data. We release the benchmark
 and implementation to support future evaluations of new condensation methods.

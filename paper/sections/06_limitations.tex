@@ -1,69 +1,52 @@
 % 06_limitations.tex  --  Where the Lens Stops
 
-\section{Where the Lens Stops: Scope and Limitations}
+\section{Where the Lens Stops}
 \label{sec:limits}
 
-The SLD diagnostic is designed around the inductive bias of histogram GBDTs.
-Three scopes delimit where that design leads to weak or negative results.
+Three settings reveal the boundaries of what split-landscape fidelity can
+predict. Each was identified by the diagnostic itself, not imposed externally.
 
-\textbf{Regression is structure-dominated, and no condenser fixes it.}
-The regression audit uses eight public datasets (diabetes, California housing,
-abalone, cpu\_act, kin8nm, house\_16H, elevators, wine quality), budgets 25/50,
-seeds 0--2, and XGBoost/LightGBM/MLP downstream learners. SLD is recomputed for
-squared-error gradients. The structure reference--the full-data tree structure
-with leaves refit under the decomposition protocol--achieves $R^2 \approx 0.63$.
-The leaf-refit model, which uses each condensed set's structure but refits
-leaves on full data, falls to $R^2 = 0.28$--$0.29$. The deployed condensed
-models then reach only $R^2 \approx 0.16$ for HistDistill and $0.05$ for
-K-center. Thus, for HistDistill, the total gap from the structure reference to
-the deployed model is about $0.47$; of that gap, about $0.35$ is structural
-($0.63-0.28$) and about $0.12$ is due to leaf-value estimation ($0.28-0.16$).
-No method we evaluate closes the structure gap: the best deployed condensed
-$R^2$ is $0.16$, well below even the leaf-refit baseline of $0.28$.
-\Cref{fig:regression} shows this pattern. The SLD diagnostic correctly
-\emph{diagnoses} this failure, since the condensed sets have high $\mathrm{SLD}_\infty$
-relative to full-data regression baselines, but it does not cure it. Regression
-tasks appear to require structure fidelity that current condensers cannot achieve
-at the budgets we study.
+\textbf{Regression: structure mismatch dominates and condensation cannot fix it.}
+Across five regression datasets, deployed condensed models reach $R^2$ near
+$0.16$--$0.17$, far below the full-data level of $0.63$. The reference-chain
+decomposition attributes roughly three-quarters of the gap to tree-structure
+mismatch and only one quarter to leaf-value errors. Refitting condensed-set
+leaves on full data recovers part of the leaf gap but barely touches the
+structure gap, and no method closes it at the budgets studied. SLD correctly
+flags these surrogates as structurally unfaithful; it does not provide a fix.
+Regression tasks require structure fidelity that small condensed sets cannot
+deliver (\Cref{fig:regression}).
 
 \begin{figure}[!t]
 \centering
 \includegraphics[width=\columnwidth]{figures/phase2_e21_regression_decomposition.png}
 \caption{%
-  \textbf{Regression failure modes.}
-  Left: leaf-population mismatch tracks leaf-estimate loss. Right: refitting
-  leaves on full data helps, but the remaining structure gap dominates.%
+  \textbf{Regression decomposition.}
+  Structure loss dominates for every method; leaf refitting helps modestly but
+  does not close the gap to the structure reference.%
 }
 \label{fig:regression}
 \end{figure}
 
-\textbf{HPO transfer is weak.}
-We test whether condensed sets preserve hyperparameter rankings on 12 binary
-datasets using HistDistill-Refined at budget 50. Each dataset evaluates the same
-100 XGBoost hist configurations on the condensed and full train/validation
-splits; the random-search space is 50--150 trees, depth 2--5, learning rate
-0.025--0.18, min-child-weight 0.5--8, subsample/column-subsample 0.65--1,
-$\lambda=0.05$--8, and $\gamma=0$--2. Across datasets, top-3 Jaccard between
-condensed- and full-data HPO results is $0.042$, top-1 match rate is $0.083$,
-and Spearman rank correlation is $0.145$. Median HPO speedup is $1.57\times$.
-The mean final test-AUROC gap is only $0.00125$, but that is because condensed
-HPO finds a different competitive configuration, not because it transfers the
-full-data ranking. Condensed HPO should therefore be followed by full-data
-checks of top configurations before deployment.
+\textbf{HPO configuration rankings transfer poorly from condensed to full data.}
+Across 12 binary datasets, the top-3 agreement between condensed- and full-data
+HPO rankings is $4.2\%$ and the top-1 match rate is $8.3\%$, with a
+configuration rank correlation near zero ($0.15$). The median retraining
+speedup is $1.6\times$, far too small to compensate. Condensed HPO can find a
+competitive configuration by chance, but it finds a different one rather than
+the full-data optimum. Top configurations selected on a condensed set should
+always be validated on full data before deployment.
 
-\textbf{No-candidate-retraining selection of the single best method remains weak.}
-SLD ranks method families well at the aggregate level (Spearman $-0.87$), but
-selecting the \emph{single best} method for a new dataset based only on SLD is
-harder. The top-3 success rate of the SLD-based selector is $0.436$
-across 156 dataset--budget--seed cells, and the top-1 rate is $0.122$. The
-split-regret selector performs similarly.
-The landscape score is useful for screening out bad condensers and ranking
-families, but the gap between the top-2 or top-3 methods is often smaller than
-the within-dataset variance of SLD, making single-method selection unreliable.
-Future work could combine the landscape score with dataset-level meta-features
-to improve per-instance selection.
+\textbf{Training-free selection of the single best method is unreliable.}
+Split-regret reliably orders method families (Spearman $\rho=-0.87$), but
+per-dataset selection of the single best method is harder. The top-3 success
+rate of the SLD-based selector is $43.6\%$ and the top-1 rate is $12.2\%$
+across all dataset--budget cells. When the second- and third-ranked methods are
+close in regret, as is typical, the score is more useful as a rejection filter
+for clearly poor surrogates than as an oracle.
 
-Across eight multiclass datasets, HistDistill obtains $0.910$ one-vs-rest
-macro-AUROC versus Random $0.897$, a thin positive extension rather than a main
-claim; overall, SLD is built around the GBDT split-gain objective, and its
-predictive value erodes as a task drifts away from that inductive bias.
+Across five multiclass datasets the gain-path family improves over Random by
+$1.3\%$ macro-AUROC, a positive but thin extension of the binary results. Taken
+together, these findings confirm that SLD is a measurement instrument designed
+around the GBDT split-gain objective; its signal erodes wherever that objective
+does not govern the learning.

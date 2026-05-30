@@ -116,7 +116,7 @@ $(1 - 1/e)$ guarantee~\cite{nemhauser1978submodular}. This defines
 HistDistill-Greedy: it covers the split landscape near-optimally yet performs
 poorly by downstream predictive performance
 (\cref{sec:results-coverage}). The gap between coverage and predictive fidelity is the
-main empirical contrast in \cref{sec:results-coverage}.
+central empirical finding of \cref{sec:results-coverage}.
 
 \subsection{Computing SLD: Algorithm}
 
@@ -127,7 +127,7 @@ trained. After shared binning, histogram accumulation costs $O(NF)$ for full
 data and $O(mF)$ for the surrogate; prefix-sum gain evaluation and memory are
 $O(FB)$ per node.
 
-\begin{algorithm}[t]
+\begin{algorithm}[!ht]
 \caption{Compute Split-Landscape Discrepancy without candidate retraining}
 \label{alg:sld}
 \begin{algorithmic}[1]
