@@ -58,7 +58,7 @@ Expected outputs:
 - `results/split_fidelity/smoke_binary/`
 - aggregate CSVs and smoke figures under `paper_tables/`
 
-### Closely replicate the focused binary study
+### Quick focused binary replication
 
 The focused config uses 8 binary datasets, budgets 25 and 50, seeds 0, 1, and 2, XGBoost teacher settings, and downstream learners XGBoost, LightGBM, CatBoost/fallback, random forest, and MLP.
 
@@ -83,17 +83,17 @@ Expected outputs:
 
 ### Reproduce the current paper material package
 
-The paper text describes a broader artifact with a 26-dataset binary audit, five-budget core grid, phase-2 diagnostics, breadth studies, and a scale audit. These are the main entry points:
+The paper text describes a broader artifact with a 26-dataset binary audit, five-budget core grid, phase-2 diagnostics, breadth studies, and a scale audit. The headline core grid uses `configs\dataset26_binary.yaml` and five seeds. The 17-method diagnostic/phase-2 grid intentionally uses three seeds where the PDF reports 156 dataset--budget--seed cells per method.
 
 ```powershell
-python scripts\19_run_icdm_core.py --config configs\focused.yaml --budgets 10,25,50,100,200 --seeds 0,1,2 --n-jobs 8
-python scripts\20_summarize_icdm_core.py --paper-tables paper_tables --paper-materials paper_materials --budgets 10,25,50,100,200 --seeds 0,1,2
+python scripts\19_run_icdm_core.py --config configs\dataset26_binary.yaml --budgets 10,25,50,100,200 --seeds 0,1,2,3,4 --n-jobs 8
+python scripts\20_summarize_icdm_core.py --paper-tables paper_tables --paper-materials paper_materials --budgets 10,25,50,100,200 --seeds 0,1,2,3,4
 python scripts\21_summarize_icdm_ablations.py --paper-tables paper_tables --paper-materials paper_materials --budgets 25,50 --seeds 0,1,2
-python scripts\22_summarize_theory_diagnostics.py --config configs\focused.yaml --paper-tables paper_tables --paper-materials paper_materials --budgets 10,25,50,100,200 --seeds 0,1,2
-python scripts\25_summarize_density_pareto.py --config configs\focused.yaml --paper-tables paper_tables --paper-materials paper_materials --budgets 25,50 --seeds 0,1,2
+python scripts\22_summarize_theory_diagnostics.py --config configs\dataset26_binary.yaml --paper-tables paper_tables --paper-materials paper_materials --budgets 10,25,50,100,200 --seeds 0,1,2,3,4
+python scripts\25_summarize_density_pareto.py --config configs\dataset26_binary.yaml --paper-tables paper_tables --paper-materials paper_materials --budgets 25,50 --seeds 0,1,2
 python scripts\30_summarize_binary_headline_5seed.py --paper-tables paper_tables --paper-materials paper_materials --budgets 25,50 --seeds 0,1,2,3,4
-python scripts\32_run_phase2_experiments.py --config configs\focused.yaml --paper-tables paper_tables --paper-materials paper_materials --budgets 25,50 --seeds 0,1,2 --n-jobs 8
-python scripts\33_run_phase2_full_e18_e21.py --config configs\focused.yaml --paper-materials paper_materials --seeds 0,1,2 --n-jobs 8
+python scripts\32_run_phase2_experiments.py --config configs\dataset26_binary.yaml --paper-tables paper_tables --paper-materials paper_materials --budgets 25,50 --seeds 0,1,2 --n-jobs 8
+python scripts\33_run_phase2_full_e18_e21.py --config configs\dataset26_binary.yaml --paper-materials paper_materials --seeds 0,1,2 --n-jobs 8
 python scripts\34_run_large_scale_experiment.py --quick --n-jobs 8
 python scripts\26_build_final_results_digest.py --paper-materials paper_materials
 ```
@@ -132,13 +132,15 @@ Some of these commands are long-running and expect previously downloaded or cach
 
 - `configs/default.yaml`: base project paths, data split settings, teacher parameters, landscape construction, distillation loss weights, and downstream learner list.
 - `configs/focused.yaml`: focused binary-suite settings; 8 datasets, 80 distillation steps, and the same teacher/landscape defaults used by the fast paper loop.
+- `configs/dataset26_binary.yaml`: exact 26-dataset binary benchmark used for the paper's headline core grid and diagnostic audit.
 - `configs/ablations.yaml`: loss-component toggles for distillation ablations.
 
 Important default values:
 
 - Teacher: XGBoost histogram, 80 estimators, depth 3, learning rate 0.08, lambda 1.0, subsample 0.9, column subsample 0.9.
 - Landscape: top 32, hard 32, random 64 candidates; probe depth 2; up to 24 probe regions.
-- Focused datasets: `adult`, `australian`, `bank_marketing`, `breast_w`, `credit_g`, `diabetes`, `pc1`, `spambase`.
+- Focused quick datasets: `adult`, `australian`, `bank_marketing`, `breast_w`, `credit_g`, `diabetes`, `pc1`, `spambase`.
+- Main paper binary datasets: listed in `configs/dataset26_binary.yaml` and `paper_tables/binary_dataset_inventory.csv`.
 - Main binary budgets used in the paper material: `10,25,50,100,200`; focused quick loop uses `25,50`.
 
 ## Tables and Figures

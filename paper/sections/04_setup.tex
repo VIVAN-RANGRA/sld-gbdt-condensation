@@ -107,12 +107,13 @@ All datasets are public, and all preprocessing is deterministic: categorical
 features are ordinal/one-hot encoded as specified in the scripts, numerical
 features are binned with shared full-data bin edges, and train/validation/test
 splits use stratified seeds where labels permit. The artifact repository,
-\url{https://github.com/VIVAN-RANGRA/sld-gbdt-condensation}, contains the
-exact configs, seeds, package versions (Python 3.11.9, NumPy 2.4.4, pandas
-2.2.3, scikit-learn 1.8.0, XGBoost 3.2.0, LightGBM 4.6.0, SciPy 1.17.1),
-processed metric CSVs, plotting scripts, and commands such as
-\texttt{python scripts/19\_run\_icdm\_core.py},
-\texttt{python scripts/32\_run\_phase2\_experiments.py}, and
-\texttt{python scripts/34\_run\_large\_scale\_experiment.py}. The repository is
+\url{https://github.com/VIVAN-RANGRA/sld-gbdt-condensation} (tag
+\texttt{icdm-repro-v1}), contains the exact configs, seeds, package versions
+(Python 3.11.9, NumPy 2.4.4, pandas 2.2.3, scikit-learn 1.8.0, XGBoost 3.2.0,
+LightGBM 4.6.0, SciPy 1.17.1), processed metric CSVs, plotting scripts, and
+the runbook commands for \texttt{scripts/19\_run\_icdm\_core.py} with
+\texttt{configs/dataset26\_binary.yaml} and seeds 0--4,
+\texttt{scripts/32\_run\_phase2\_experiments.py}, and
+\texttt{scripts/34\_run\_large\_scale\_experiment.py}. The repository is
 intended to reproduce the reported tables exactly when cached processed data are
 used, and to closely replicate them from raw public data.
