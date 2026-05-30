@@ -55,20 +55,18 @@ build a measurement instrument that is GBDT-mechanism-specific: it explains
 
 \paragraph{The C\textsuperscript{2}TC contrast.}
 The most closely related recent work is C\textsuperscript{2}TC~\cite{xu2026c2tc}
-(ICDE 2026), a training-free tabular condensation
-\emph{method}: it optimises class allocation and feature representation via
-class-adaptive clustering to produce a condensed set efficiently. Our work is
-fundamentally different in intent. C\textsuperscript{2}TC is a
-\emph{condenser}: it produces a surrogate dataset. SLD is a
-\emph{measurement instrument}: it audits the fidelity of any surrogate,
-including one produced by C\textsuperscript{2}TC, with respect to the GBDT
-split-gain landscape. Where C\textsuperscript{2}TC is model-agnostic in its
-clustering objective, SLD is GBDT-mechanism-specific: it reads the landscape
-from histogram statistics under a fixed prediction state without retraining on
-each candidate. We do not include C\textsuperscript{2}TC in the full grid
-because its official implementation was not integrated before our 17-method
-grid was frozen. As a compatibility audit, we ran the official
-C\textsuperscript{2}TC code on our Adult split at budget 200; the generated set
-obtained AUROC $0.769$ and raw $\mathrm{SLD}_\infty=1228.2$, confirming that
-SLD can audit C\textsuperscript{2}TC-generated surrogates; this single run does
-not constitute a full C\textsuperscript{2}TC baseline.
+(ICDE 2026), a training-free tabular condensation method that optimises class
+allocation and feature representation through class-adaptive clustering. Our
+work is different in intent: C\textsuperscript{2}TC is a condenser, while SLD
+is a diagnostic that audits whether any surrogate preserves the GBDT
+split-gain landscape under a fixed prediction state. We did not include
+C\textsuperscript{2}TC in the 17-method comparative grid because its official
+implementation was not directly compatible with our frozen weighted-surrogate
+benchmarking interface at the time of grid construction. To avoid leaving this
+interaction untested, we ran a compatibility audit using the official
+C\textsuperscript{2}TC code on the Adult split at budget 200. The generated
+surrogate achieved AUROC $0.769$, but had raw $\mathrm{SLD}_\infty=1228.21$,
+relative $\mathrm{SLD}_\infty=4.72$, and root agreement $=0.0$. This confirms
+that SLD can audit C\textsuperscript{2}TC-generated surrogates, but the single
+compatibility run is not a full C\textsuperscript{2}TC baseline and should not
+be interpreted as a comparative result.
